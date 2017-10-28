@@ -94,11 +94,11 @@
 #include <string.h>
 #include <ctype.h>
                                                                                 
-#if !defined(__WIN32__) && !defined(__MSDOS__) && !defined(WIN32)
+#if !defined(__WIN32__) && !defined(__MSDOS__) && !defined(_WIN32)
    #include <unistd.h>
 #endif
 
-#if defined (WIN32)
+#if defined (_WIN32)
    #include <windows.h>
 #endif
 
@@ -461,7 +461,7 @@ static void init_gToOpen( const char *filePath, const char *suffix )
 {
    
    char *ptr;
-   #ifdef WIN32
+   #ifdef _WIN32
       const int sepChar = (int)'\\';
    #else
       const int sepChar = (int)'/';
@@ -656,8 +656,8 @@ static void fileDelete( const char *fileToDelete )
 {
    init_gToOpen( fileToDelete, NULL );
 
-   #if defined (WIN32)
-      DeleteFile (fileToDelete);
+   #if defined (_WIN32)
+      DeleteFileA(fileToDelete);
    #else
       unlink (fileToDelete);
    #endif
