@@ -54,19 +54,9 @@
  * next time gen_code is run.
  */
 /* Generated */ 
-/* Generated */ #if defined( _MANAGED )
-/* Generated */    #include "TA-Lib-Core.h"
-/* Generated */    #define TA_INTERNAL_ERROR(Id) (RetCode::InternalError)
-/* Generated */    namespace TicTacTec { namespace TA { namespace Library {
-/* Generated */ #elif defined( _JAVA )
-/* Generated */    #include "ta_defs.h"
-/* Generated */    #include "ta_java_defs.h"
-/* Generated */    #define TA_INTERNAL_ERROR(Id) (RetCode.InternalError)
-/* Generated */ #else
-/* Generated */    #include <string.h>
-/* Generated */    #include <math.h>
-/* Generated */    #include "ta_func.h"
-/* Generated */ #endif
+/* Generated */ #include <string.h>
+/* Generated */ #include <math.h>
+/* Generated */ #include "ta_func.h"
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
 /* Generated */    #include "ta_utility.h"
@@ -79,16 +69,8 @@
 /* Generated */ #define TA_PREFIX(x) TA_##x
 /* Generated */ #define INPUT_TYPE   double
 /* Generated */ 
-/* Generated */ #if defined( _MANAGED )
-/* Generated */ int Core::WclPriceLookback( void )
-/* Generated */ 
-/* Generated */ #elif defined( _JAVA )
-/* Generated */ public int wclPriceLookback(  )
-/* Generated */ 
-/* Generated */ #else
 /* Generated */ int TA_WCLPRICE_Lookback( void )
 /* Generated */ 
-/* Generated */ #endif
 /**** END GENCODE SECTION 1 - DO NOT DELETE THIS LINE ****/
 {
    /* insert local variable here */
@@ -112,34 +94,6 @@
  * 
  */
 /* Generated */ 
-/* Generated */ #if defined( _MANAGED ) && defined( USE_SUBARRAY )
-/* Generated */ enum class Core::RetCode Core::WclPrice( int    startIdx,
-/* Generated */                                          int    endIdx,
-/* Generated */                                          SubArray^    inHigh,
-/* Generated */                                          SubArray^    inLow,
-/* Generated */                                          SubArray^    inClose,
-/* Generated */                                          [Out]int%    outBegIdx,
-/* Generated */                                          [Out]int%    outNBElement,
-/* Generated */                                          cli::array<double>^  outReal )
-/* Generated */ #elif defined( _MANAGED )
-/* Generated */ enum class Core::RetCode Core::WclPrice( int    startIdx,
-/* Generated */                                          int    endIdx,
-/* Generated */                                          cli::array<double>^ inHigh,
-/* Generated */                                          cli::array<double>^ inLow,
-/* Generated */                                          cli::array<double>^ inClose,
-/* Generated */                                          [Out]int%    outBegIdx,
-/* Generated */                                          [Out]int%    outNBElement,
-/* Generated */                                          cli::array<double>^  outReal )
-/* Generated */ #elif defined( _JAVA )
-/* Generated */ public RetCode wclPrice( int    startIdx,
-/* Generated */                          int    endIdx,
-/* Generated */                          double       inHigh[],
-/* Generated */                          double       inLow[],
-/* Generated */                          double       inClose[],
-/* Generated */                          MInteger     outBegIdx,
-/* Generated */                          MInteger     outNBElement,
-/* Generated */                          double        outReal[] )
-/* Generated */ #else
 /* Generated */ TA_RetCode TA_WCLPRICE( int    startIdx,
 /* Generated */                         int    endIdx,
 /* Generated */                         const double inHigh[],
@@ -148,7 +102,6 @@
 /* Generated */                         int          *outBegIdx,
 /* Generated */                         int          *outNBElement,
 /* Generated */                         double        outReal[] )
-/* Generated */ #endif
 /**** END GENCODE SECTION 3 - DO NOT DELETE THIS LINE ****/
 {
    /* Insert local variables here. */
@@ -164,17 +117,13 @@
 /* Generated */    if( (endIdx < 0) || (endIdx < startIdx))
 /* Generated */       return ENUM_VALUE(RetCode,TA_OUT_OF_RANGE_END_INDEX,OutOfRangeEndIndex);
 /* Generated */ 
-/* Generated */    #if !defined(_JAVA)
 /* Generated */    /* Verify required price component. */
 /* Generated */    if(!inHigh||!inLow||!inClose)
 /* Generated */       return ENUM_VALUE(RetCode,TA_BAD_PARAM,BadParam);
 /* Generated */ 
-/* Generated */    #endif /* !defined(_JAVA)*/
-/* Generated */    #if !defined(_JAVA)
-/* Generated */    if( !outReal )
+/* Generated */    /* Generated */    if( !outReal )
 /* Generated */       return ENUM_VALUE(RetCode,TA_BAD_PARAM,BadParam);
 /* Generated */ 
-/* Generated */    #endif /* !defined(_JAVA) */
 /* Generated */ #endif /* TA_FUNC_NO_RANGE_CHECK */
 /* Generated */ 
 /**** END GENCODE SECTION 4 - DO NOT DELETE THIS LINE ****/
@@ -207,25 +156,6 @@
 /* Generated */ #endif
 /* Generated */ #undef   INPUT_TYPE
 /* Generated */ #define  INPUT_TYPE float
-/* Generated */ #if defined( _MANAGED )
-/* Generated */ enum class Core::RetCode Core::WclPrice( int    startIdx,
-/* Generated */                                          int    endIdx,
-/* Generated */                                          cli::array<float>^ inHigh,
-/* Generated */                                          cli::array<float>^ inLow,
-/* Generated */                                          cli::array<float>^ inClose,
-/* Generated */                                          [Out]int%    outBegIdx,
-/* Generated */                                          [Out]int%    outNBElement,
-/* Generated */                                          cli::array<double>^  outReal )
-/* Generated */ #elif defined( _JAVA )
-/* Generated */ public RetCode wclPrice( int    startIdx,
-/* Generated */                          int    endIdx,
-/* Generated */                          float        inHigh[],
-/* Generated */                          float        inLow[],
-/* Generated */                          float        inClose[],
-/* Generated */                          MInteger     outBegIdx,
-/* Generated */                          MInteger     outNBElement,
-/* Generated */                          double        outReal[] )
-/* Generated */ #else
 /* Generated */ TA_RetCode TA_S_WCLPRICE( int    startIdx,
 /* Generated */                           int    endIdx,
 /* Generated */                           const float  inHigh[],
@@ -234,7 +164,6 @@
 /* Generated */                           int          *outBegIdx,
 /* Generated */                           int          *outNBElement,
 /* Generated */                           double        outReal[] )
-/* Generated */ #endif
 /* Generated */ {
 /* Generated */    int outIdx, i;
 /* Generated */  #ifndef TA_FUNC_NO_RANGE_CHECK

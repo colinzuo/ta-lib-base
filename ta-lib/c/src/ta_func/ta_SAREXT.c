@@ -65,19 +65,9 @@
  * next time gen_code is run.
  */
 /* Generated */ 
-/* Generated */ #if defined( _MANAGED )
-/* Generated */    #include "TA-Lib-Core.h"
-/* Generated */    #define TA_INTERNAL_ERROR(Id) (RetCode::InternalError)
-/* Generated */    namespace TicTacTec { namespace TA { namespace Library {
-/* Generated */ #elif defined( _JAVA )
-/* Generated */    #include "ta_defs.h"
-/* Generated */    #include "ta_java_defs.h"
-/* Generated */    #define TA_INTERNAL_ERROR(Id) (RetCode.InternalError)
-/* Generated */ #else
-/* Generated */    #include <string.h>
-/* Generated */    #include <math.h>
-/* Generated */    #include "ta_func.h"
-/* Generated */ #endif
+/* Generated */ #include <string.h>
+/* Generated */ #include <math.h>
+/* Generated */ #include "ta_func.h"
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
 /* Generated */    #include "ta_utility.h"
@@ -90,27 +80,6 @@
 /* Generated */ #define TA_PREFIX(x) TA_##x
 /* Generated */ #define INPUT_TYPE   double
 /* Generated */ 
-/* Generated */ #if defined( _MANAGED )
-/* Generated */ int Core::SarExtLookback( double        optInStartValue, /* From TA_REAL_MIN to TA_REAL_MAX */
-/* Generated */                         double        optInOffsetOnReverse, /* From 0 to TA_REAL_MAX */
-/* Generated */                         double        optInAccelerationInitLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                         double        optInAccelerationLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                         double        optInAccelerationMaxLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                         double        optInAccelerationInitShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                         double        optInAccelerationShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                         double        optInAccelerationMaxShort )  /* From 0 to TA_REAL_MAX */
-/* Generated */ 
-/* Generated */ #elif defined( _JAVA )
-/* Generated */ public int sarExtLookback( double        optInStartValue, /* From TA_REAL_MIN to TA_REAL_MAX */
-/* Generated */                          double        optInOffsetOnReverse, /* From 0 to TA_REAL_MAX */
-/* Generated */                          double        optInAccelerationInitLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                          double        optInAccelerationLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                          double        optInAccelerationMaxLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                          double        optInAccelerationInitShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                          double        optInAccelerationShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                          double        optInAccelerationMaxShort )  /* From 0 to TA_REAL_MAX */
-/* Generated */ 
-/* Generated */ #else
 /* Generated */ int TA_SAREXT_Lookback( double        optInStartValue, /* From TA_REAL_MIN to TA_REAL_MAX */
 /* Generated */                       double        optInOffsetOnReverse, /* From 0 to TA_REAL_MAX */
 /* Generated */                       double        optInAccelerationInitLong, /* From 0 to TA_REAL_MAX */
@@ -120,7 +89,6 @@
 /* Generated */                       double        optInAccelerationShort, /* From 0 to TA_REAL_MAX */
 /* Generated */                       double        optInAccelerationMaxShort )  /* From 0 to TA_REAL_MAX */
 /* Generated */ 
-/* Generated */ #endif
 /**** END GENCODE SECTION 1 - DO NOT DELETE THIS LINE ****/
 {
    /* insert local variable here */
@@ -223,55 +191,6 @@
  * 
  */
 /* Generated */ 
-/* Generated */ #if defined( _MANAGED ) && defined( USE_SUBARRAY )
-/* Generated */ enum class Core::RetCode Core::SarExt( int    startIdx,
-/* Generated */                                        int    endIdx,
-/* Generated */                                        SubArray^    inHigh,
-/* Generated */                                        SubArray^    inLow,
-/* Generated */                                        double        optInStartValue, /* From TA_REAL_MIN to TA_REAL_MAX */
-/* Generated */                                        double        optInOffsetOnReverse, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationInitLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationMaxLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationInitShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationMaxShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        [Out]int%    outBegIdx,
-/* Generated */                                        [Out]int%    outNBElement,
-/* Generated */                                        cli::array<double>^  outReal )
-/* Generated */ #elif defined( _MANAGED )
-/* Generated */ enum class Core::RetCode Core::SarExt( int    startIdx,
-/* Generated */                                        int    endIdx,
-/* Generated */                                        cli::array<double>^ inHigh,
-/* Generated */                                        cli::array<double>^ inLow,
-/* Generated */                                        double        optInStartValue, /* From TA_REAL_MIN to TA_REAL_MAX */
-/* Generated */                                        double        optInOffsetOnReverse, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationInitLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationMaxLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationInitShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationMaxShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        [Out]int%    outBegIdx,
-/* Generated */                                        [Out]int%    outNBElement,
-/* Generated */                                        cli::array<double>^  outReal )
-/* Generated */ #elif defined( _JAVA )
-/* Generated */ public RetCode sarExt( int    startIdx,
-/* Generated */                        int    endIdx,
-/* Generated */                        double       inHigh[],
-/* Generated */                        double       inLow[],
-/* Generated */                        double        optInStartValue, /* From TA_REAL_MIN to TA_REAL_MAX */
-/* Generated */                        double        optInOffsetOnReverse, /* From 0 to TA_REAL_MAX */
-/* Generated */                        double        optInAccelerationInitLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                        double        optInAccelerationLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                        double        optInAccelerationMaxLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                        double        optInAccelerationInitShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                        double        optInAccelerationShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                        double        optInAccelerationMaxShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                        MInteger     outBegIdx,
-/* Generated */                        MInteger     outNBElement,
-/* Generated */                        double        outReal[] )
-/* Generated */ #else
 /* Generated */ TA_RetCode TA_SAREXT( int    startIdx,
 /* Generated */                       int    endIdx,
 /* Generated */                       const double inHigh[],
@@ -287,7 +206,6 @@
 /* Generated */                       int          *outBegIdx,
 /* Generated */                       int          *outNBElement,
 /* Generated */                       double        outReal[] )
-/* Generated */ #endif
 /**** END GENCODE SECTION 3 - DO NOT DELETE THIS LINE ****/
 {
 	/* insert local variable here */
@@ -312,13 +230,11 @@
 /* Generated */    if( (endIdx < 0) || (endIdx < startIdx))
 /* Generated */       return ENUM_VALUE(RetCode,TA_OUT_OF_RANGE_END_INDEX,OutOfRangeEndIndex);
 /* Generated */ 
-/* Generated */    #if !defined(_JAVA)
 /* Generated */    /* Verify required price component. */
 /* Generated */    if(!inHigh||!inLow)
 /* Generated */       return ENUM_VALUE(RetCode,TA_BAD_PARAM,BadParam);
 /* Generated */ 
-/* Generated */    #endif /* !defined(_JAVA)*/
-/* Generated */    if( optInStartValue == TA_REAL_DEFAULT )
+/* Generated */    /* Generated */    if( optInStartValue == TA_REAL_DEFAULT )
 /* Generated */       optInStartValue = 0.000000e+0;
 /* Generated */    else if( (optInStartValue < -3.000000e+37) ||/* Generated */  (optInStartValue > 3.000000e+37) )
 /* Generated */       return ENUM_VALUE(RetCode,TA_BAD_PARAM,BadParam);
@@ -358,11 +274,9 @@
 /* Generated */    else if( (optInAccelerationMaxShort < 0.000000e+0) ||/* Generated */  (optInAccelerationMaxShort > 3.000000e+37) )
 /* Generated */       return ENUM_VALUE(RetCode,TA_BAD_PARAM,BadParam);
 /* Generated */ 
-/* Generated */    #if !defined(_JAVA)
 /* Generated */    if( !outReal )
 /* Generated */       return ENUM_VALUE(RetCode,TA_BAD_PARAM,BadParam);
 /* Generated */ 
-/* Generated */    #endif /* !defined(_JAVA) */
 /* Generated */ #endif /* TA_FUNC_NO_RANGE_CHECK */
 /* Generated */ 
 /**** END GENCODE SECTION 4 - DO NOT DELETE THIS LINE ****/
@@ -705,39 +619,6 @@
 /* Generated */ #endif
 /* Generated */ #undef   INPUT_TYPE
 /* Generated */ #define  INPUT_TYPE float
-/* Generated */ #if defined( _MANAGED )
-/* Generated */ enum class Core::RetCode Core::SarExt( int    startIdx,
-/* Generated */                                        int    endIdx,
-/* Generated */                                        cli::array<float>^ inHigh,
-/* Generated */                                        cli::array<float>^ inLow,
-/* Generated */                                        double        optInStartValue, /* From TA_REAL_MIN to TA_REAL_MAX */
-/* Generated */                                        double        optInOffsetOnReverse, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationInitLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationMaxLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationInitShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        double        optInAccelerationMaxShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                                        [Out]int%    outBegIdx,
-/* Generated */                                        [Out]int%    outNBElement,
-/* Generated */                                        cli::array<double>^  outReal )
-/* Generated */ #elif defined( _JAVA )
-/* Generated */ public RetCode sarExt( int    startIdx,
-/* Generated */                        int    endIdx,
-/* Generated */                        float        inHigh[],
-/* Generated */                        float        inLow[],
-/* Generated */                        double        optInStartValue, /* From TA_REAL_MIN to TA_REAL_MAX */
-/* Generated */                        double        optInOffsetOnReverse, /* From 0 to TA_REAL_MAX */
-/* Generated */                        double        optInAccelerationInitLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                        double        optInAccelerationLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                        double        optInAccelerationMaxLong, /* From 0 to TA_REAL_MAX */
-/* Generated */                        double        optInAccelerationInitShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                        double        optInAccelerationShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                        double        optInAccelerationMaxShort, /* From 0 to TA_REAL_MAX */
-/* Generated */                        MInteger     outBegIdx,
-/* Generated */                        MInteger     outNBElement,
-/* Generated */                        double        outReal[] )
-/* Generated */ #else
 /* Generated */ TA_RetCode TA_S_SAREXT( int    startIdx,
 /* Generated */                         int    endIdx,
 /* Generated */                         const float  inHigh[],
@@ -753,7 +634,6 @@
 /* Generated */                         int          *outBegIdx,
 /* Generated */                         int          *outNBElement,
 /* Generated */                         double        outReal[] )
-/* Generated */ #endif
 /* Generated */ {
 /* Generated */    ENUM_DECLARATION(RetCode) retCode;
 /* Generated */    int isLong; 
