@@ -144,38 +144,13 @@ FileHandle *gOutRetCode_C;     /* For "ta_retcode.c" */
 FileHandle *gOutRetCode_CSV;   /* For "ta_retcode.csv" */
 FileHandle *gOutFuncList_TXT;  /* For "ta_func_list.txt" */
 FileHandle *gOutDefs_H;        /* For "ta_defs.h" */
-FileHandle *gOutFunc_SWG;      /* For SWIG */
 FileHandle *gOutFunc_XML;      /* For "ta_func_api.xml" */
 FileHandle *gOutFuncAPI_C;     /* For "ta_func_api.c" */
 FileHandle *gOutMakefile_AM;   /* For "Makefile.am" */
 
 #ifdef _MSC_VER
 /* The following files are generated only on Windows platform. */
-FileHandle *gOutDotNet_H;      /* For .NET interface file */
-FileHandle *gOutCore_Java;       /* For Core.Java */
-FileHandle *gOutProjFile;        /* For .NET project file */
-FileHandle *gOutMSVCProjFile;    /* For MSVC project file */
 FileHandle *gOutVS2005ProjFile;  /* For VS2005 project file */
-FileHandle *gOutExcelGlue_C;     /* For "excel_glue.c" */
-FileHandle *gOutJavaDefs_H;      /* For "java_defs.h" */
-FileHandle *gOutFunc_Annotation; /* For "CoreAnnotated.java" */
-
-/* Why these file are not generated from a unix platform?
- *
- * The reason is obvious for .NET, Excel and MSVC related files.
- * 
- * For the Java code, the reason is that I use a C preprocessor 
- * called MCPP and for now I have ported it only on windows.
- * (see the mcpp.exe included in the package).
- * If someone get the mcpp or an equivalent to be integrated
- * in gen_code, then Java code could also be generated from unix.
- */
-static void printExcelGlueCode( FILE *out, const TA_FuncInfo *funcInfo );
-static void genJavaCodePhase1( const TA_FuncInfo *funcInfo );
-static void genJavaCodePhase2( const TA_FuncInfo *funcInfo );
-
-/* To generate CoreAnnotated.java */
-static void printJavaFunctionAnnotation(const TA_FuncInfo *funcInfo);
 #endif
 
 
@@ -214,14 +189,8 @@ static void printFunc( FILE *out,
                        unsigned int semiColonNeeded,        /* Boolean */
                        unsigned int validationCode,         /* Boolean */
                        unsigned int lookbackSignature,      /* Boolean */
-                       unsigned int managedCPPCode,         /* Boolean */
-                       unsigned int managedCPPDeclaration,  /* Boolean */
                        unsigned int inputIsSinglePrecision, /* Boolean */
-                       unsigned int outputForSWIG,          /* Boolean */
-                       unsigned int outputForJava,          /* Boolean */
-                       unsigned int lookbackValidationCode, /* Boolean */
-					   unsigned int useSubArrayObject,      /* Boolean */
-					   unsigned int arrayToSubArrayCnvt     /* Boolean */
+                       unsigned int lookbackValidationCode /* Boolean */
                      );
 
 static void printCallFrame  ( FILE *out, const TA_FuncInfo *funcInfo );
@@ -262,8 +231,6 @@ static int createTemplate( FileHandle *in, FileHandle *out );
 static int generateFuncAPI_C( void );
 
 #ifdef _MSC_VER
-static int createProjTemplate( FileHandle *in, FileHandle *out );
-static int createMSVCProjTemplate( FileHandle *in, FileHandle *out );
 static int createVS2005ProjTemplate( FileHandle *in, FileHandle *out );
 static void printVS2005FileNode( FILE *out, const char *name );
 #endif
@@ -391,16 +358,8 @@ int main(int argc, char* argv[])
          printf( "     4) ta-lib/c/src/ta_common/ta_retcode.*\n" );
          printf( "     5) ta-lib/c/src/ta_abstract/ta_group_idx.c\n");     
          printf( "     6) ta-lib/c/src/ta_abstract/frames/*.*\n");
-         printf( "     7) ta-lib/swig/src/interface/ta_func.swg\n" );
-         printf( "     8) ta-lib/dotnet/src/Core/TA-Lib-Core.vcproj (Win32 only)\n" );
-         printf( "     9) ta-lib/dotnet/src/Core/TA-Lib-Core.h (Win32 only)\n" );
-         printf( "    10) ta-lib/c/src/ta_abstract/excel_glue.c (Win32 only)\n" );
-         printf( "    11) ta-lib/c/src/ta_abstract/java_defs.h (Win32 only)\n" );
-         printf( "    12) ta-lib/c/ide/msvc/lib_proj/ta_func/ta_func.dsp (Win32 only)\n" );
-         printf( "    13) ta-lib/java/src/com/tictactec/ta/lib/Core.java (Win32 only)\n" );
-         printf( "    14) ta-lib/java/src/com/tictactec/ta/lib/CoreAnnotated.java (Win32 only)\n" );
-         printf( "    15) ta-lib/ta_func_api.xml\n" );
-         printf( "    16) ta-lib/c/src/ta_abstract/ta_func_api.c\n" );
+         printf( "     7) ta-lib/ta_func_api.xml\n" );
+         printf( "     8) ta-lib/c/src/ta_abstract/ta_func_api.c\n" );
          printf( "\n" );
          printf( "  The function header, parameters and validation code of all TA\n" );
          printf( "  function in c/src/ta_func are also updated.\n" );
@@ -670,59 +629,12 @@ static int genCode(int argc, char* argv[])
 
    #ifdef _MSC_VER
    FileHandle *tempFile;
-   FileHandle *tempFileOut;
    #endif
 
    (void)argc; /* Get ride of compiler warning */
    (void)argv; /* Get ride of compiler warning */
 
    #ifdef _MSC_VER
-      /* Create .NET project files template */
-      #define FILE_NET_PROJ     "..\\..\\dotnet\\src\\Core\\TA-Lib-Core.vcproj"
-      #define FILE_NET_PROJ_TMP "..\\temp\\dotnetproj.tmp"
-      gOutProjFile = fileOpen( FILE_NET_PROJ, NULL, FILE_READ );
-      if( gOutProjFile == NULL )   
-      {
-         printf( "\nCannot access [%s]\n", gToOpen );
-         return -1;
-      }
-      tempFile = fileOpen( FILE_NET_PROJ_TMP, NULL, FILE_WRITE|WRITE_ALWAYS );
-      if( tempFile == NULL )
-      {
-         printf( "Cannot create temporary .NET project file!\n" );
-         return -1;
-      }
-      if( createProjTemplate( gOutProjFile, tempFile ) != 0 )
-      {
-         printf( "Failed to parse and write the temporary .NET project file!\n" );
-         return -1;
-      }
-      fileClose(gOutProjFile);
-      fileClose(tempFile);
-
-      /* Create MSVC project files template */
-      #define FILE_MSVC_PROJ     "..\\..\\c\\ide\\msvc\\lib_proj\\ta_func\\ta_func.dsp"
-      #define FILE_MSVC_PROJ_TMP "..\\temp\\ta_func_dsp.tmp"
-      gOutMSVCProjFile = fileOpen( FILE_MSVC_PROJ, NULL, FILE_READ );
-      if( gOutMSVCProjFile == NULL )   
-      {
-         printf( "\nCannot access [%s]\n", gToOpen );
-         return -1;
-      }
-      tempFile = fileOpen( FILE_MSVC_PROJ_TMP, NULL, FILE_WRITE|WRITE_ALWAYS );
-      if( tempFile == NULL )
-      {
-         printf( "Cannot create temporary MSVC project file!\n" );
-         return -1;
-      }
-      if( createMSVCProjTemplate( gOutMSVCProjFile, tempFile ) != 0 )
-      {
-         printf( "Failed to parse and write the temporary MSVC project file!\n" );
-         return -1;
-      }
-      fileClose(gOutMSVCProjFile);
-      fileClose(tempFile);
-
       /* Create VS2005 project files template */
       #define FILE_VS2005_PROJ     "..\\..\\c\\ide\\vs2005\\lib_proj\\ta_func\\ta_func.vcproj"
       #define FILE_VS2005_PROJ_TMP "..\\temp\\ta_func_vcproj.tmp"
@@ -745,57 +657,14 @@ static int genCode(int argc, char* argv[])
       }
       fileClose(gOutVS2005ProjFile);
       fileClose(tempFile);
-   #endif
 
-   #ifdef _MSC_VER
-   /* Create Java template for Core.java */
-   #define FILE_CORE_JAVA     "..\\..\\java\\src\\com\\tictactec\\ta\\lib\\Core.java"
-   #define FILE_CORE_JAVA_TMP "..\\temp\\CoreJava.tmp"
-   #define FILE_CORE_JAVA_UNF "..\\temp\\CoreJavaUnformated.tmp"
-   gOutCore_Java = fileOpen( FILE_CORE_JAVA, NULL, FILE_READ );
-   if( gOutCore_Java == NULL )   
-   {
-         printf( "\nCannot access [%s]\n", gToOpen );
-         return -1;
-   }
-   tempFile = fileOpen( FILE_CORE_JAVA_TMP, NULL, FILE_WRITE|WRITE_ALWAYS );
-   if( tempFile == NULL )
-   {
-         printf( "Cannot create temporary Core.java project file!\n" );
-         return -1;
-   }
-   if( createTemplate( gOutCore_Java, tempFile ) != 0 )
-   {
-         printf( "Failed to parse and write the temporary Core.java project file!\n" );
-         return -1;
-   }
-   fileClose(gOutCore_Java);
-   fileClose(tempFile);
-   #endif
-
-   /* Create the .NET interface file template */
-   #ifdef _MSC_VER
-   #define FILE_NET_HEADER     "..\\..\\dotnet\\src\\Core\\TA-Lib-Core.h"
-   #define FILE_NET_HEADER_TMP "..\\temp\\dotneth.tmp"
-   gOutDotNet_H = fileOpen( FILE_NET_HEADER, NULL, FILE_READ );
-   if( gOutDotNet_H == NULL )   
-   {
-      printf( "\nCannot access [%s]\n", gToOpen );
-      return -1;
-   }
-   tempFile = fileOpen( FILE_NET_HEADER_TMP, NULL, FILE_WRITE|WRITE_ALWAYS );
-   if( tempFile == NULL )
-   {
-      printf( "Cannot create temporary .NET header file!\n" );
-      return -1;
-   }
-   if( createTemplate( gOutDotNet_H, tempFile ) != 0 )
-   {
-      printf( "Failed to parse and write the temporary .NET header file!\n" );
-      return -1;
-   }
-   fileClose(gOutDotNet_H);
-   fileClose(tempFile);
+      /* Re-open the VS2005 project template. */
+      gOutVS2005ProjFile = fileOpen(FILE_VS2005_PROJ, FILE_VS2005_PROJ_TMP, FILE_WRITE | WRITE_ON_CHANGE_ONLY);
+      if (gOutVS2005ProjFile == NULL)
+      {
+          printf("Cannot update [%s]\n", FILE_VS2005_PROJ);
+          return -1;
+      }
    #endif
 
    /* Create ta_retcode.c */
@@ -820,18 +689,7 @@ static int genCode(int argc, char* argv[])
    if(gOutFunc_XML == NULL)
    {
 	   printf( "\nCannot access ta_func_api.xml" );
-   }
-
-
-   /* Create "ta_func.swg" */
-   gOutFunc_SWG = fileOpen( "..\\..\\swig\\src\\interface\\ta_func.swg",
-                          "..\\src\\ta_abstract\\templates\\ta_func.swg.template",
-                          FILE_WRITE|WRITE_ON_CHANGE_ONLY );
-
-   if( gOutFunc_SWG == NULL )
-   {
-      printf( "\nCannot access [%s]\n", gToOpen );
-      return -1;
+       return -1;
    }
 
    /* Create the "ta_func_list.txt" */
@@ -879,87 +737,6 @@ static int genCode(int argc, char* argv[])
       return -1;
    }
 
-
-   #ifdef _MSC_VER
-      /* Create "excel_glue.c" */
-      gOutExcelGlue_C = fileOpen( "..\\src\\ta_abstract\\excel_glue.c",
-                              "..\\src\\ta_abstract\\templates\\excel_glue.c.template",
-                              FILE_WRITE|WRITE_ON_CHANGE_ONLY );
-
-      if( gOutExcelGlue_C == NULL )
-      {
-         printf( "\nCannot access [%s]\n", gToOpen );
-         return -1;
-      }
-
-      /* Create "java_defs.h" */
-      gOutJavaDefs_H = fileOpen( "..\\src\\ta_abstract\\ta_java_defs.h",
-                             "..\\src\\ta_abstract\\templates\\ta_java_defs.h.template",
-                             FILE_WRITE|WRITE_ON_CHANGE_ONLY );
-                              
-
-      if( gOutJavaDefs_H == NULL )
-      {
-         printf( "\nCannot access [%s]\n", gToOpen );
-         return -1;
-      }
-
-      /* Re-open the .NET project template. */
-      gOutProjFile = fileOpen( FILE_NET_PROJ, FILE_NET_PROJ_TMP, FILE_WRITE|WRITE_ON_CHANGE_ONLY );
-      if( gOutProjFile == NULL )
-      {
-         printf( "Cannot update [%s]\n", FILE_NET_PROJ );
-         return -1;
-      }
-
-      /* Re-open the MSVC project template. */
-      gOutMSVCProjFile = fileOpen( FILE_MSVC_PROJ, FILE_MSVC_PROJ_TMP, FILE_WRITE|WRITE_ON_CHANGE_ONLY );
-      if( gOutMSVCProjFile == NULL )
-      {
-         printf( "Cannot update [%s]\n", FILE_MSVC_PROJ );
-         return -1;
-      }
-
-      /* Re-open the VS2005 project template. */
-      gOutVS2005ProjFile = fileOpen( FILE_VS2005_PROJ, FILE_VS2005_PROJ_TMP, FILE_WRITE|WRITE_ON_CHANGE_ONLY );
-      if( gOutVS2005ProjFile == NULL )
-      {
-         printf( "Cannot update [%s]\n", FILE_VS2005_PROJ );
-         return -1;
-      }
-
-      /* Create "CoreAnnotated.java" */
-      gOutFunc_Annotation = fileOpen( "..\\..\\java\\src\\com\\tictactec\\ta\\lib\\CoreAnnotated.java",
-                                      "..\\src\\ta_abstract\\templates\\CoreAnnotated.java.template", 
-                                      FILE_WRITE|WRITE_ON_CHANGE_ONLY );
-
-      if(gOutFunc_Annotation == NULL)
-      {
-	      printf( "\nCannot access CoreAnnotated.java" );
-      }
-
-   #endif
-
-   #ifdef _MSC_VER
-   /* Re-open the Core.java template. */
-   gOutCore_Java = fileOpen( FILE_CORE_JAVA_UNF, FILE_CORE_JAVA_TMP, FILE_WRITE|WRITE_ON_CHANGE_ONLY );
-   if( gOutCore_Java == NULL )
-   {
-      printf( "Cannot update [%s]\n", FILE_CORE_JAVA_UNF );
-      return -1;
-   }
-   #endif
-
-   /* Re-open the .NET interface template. */
-   #ifdef _MSC_VER
-   gOutDotNet_H = fileOpen( FILE_NET_HEADER, FILE_NET_HEADER_TMP, FILE_WRITE|WRITE_ON_CHANGE_ONLY );
-   if( gOutDotNet_H == NULL )
-   {
-      printf( "Cannot update [%s]\n", FILE_NET_HEADER );
-      return -1;
-   }
-   #endif
-
    /* Process each functions. Two phase. */
    TA_ForEachFunc( doForEachFunctionPhase1, NULL );
    TA_ForEachFunc( doForEachFunctionPhase2, NULL );
@@ -975,27 +752,17 @@ static int genCode(int argc, char* argv[])
 
    /* Append some "hard coded" prototype for ta_func */
    appendToFunc( gOutFunc_H->file );
-   appendToFunc( gOutFunc_SWG->file );
 
    /* Close all files who were updated with the list of TA functions. */
    fileClose( gOutFuncList_TXT );
    fileClose( gOutFunc_H );
-   fileClose( gOutFunc_SWG );
    fileClose( gOutFrame_H );
    fileClose( gOutFrame_C );
    fileClose( gOutFunc_XML );
    fileClose( gOutMakefile_AM );
 
    #ifdef _MSC_VER
-      fileClose( gOutDotNet_H );
-      fileClose( gOutCore_Java );
-      fileClose( gOutProjFile );
-      fileClose( gOutMSVCProjFile );
       fileClose( gOutVS2005ProjFile );
-      fileClose( gOutExcelGlue_C );
-      fileClose( gOutJavaDefs_H );
-      fileClose( gOutFunc_Annotation );
-      fileDelete( FILE_CORE_JAVA_TMP );
    #endif
 
    if( retCode != TA_SUCCESS )
@@ -1047,65 +814,6 @@ static int genCode(int argc, char* argv[])
    {
       return -1; /*  Failed. */
    }
-
-
-   /* Run Java Post-Processing.   
-    * On Success, the Java program create a file named "java_success". 
-    */
-   #ifndef _MSC_VER   
-      printf( "\nWarning: Java code update supported only for MSVC compiler for now.\n" );
-   #else
-      printf( "\nPost-Processing Java Code\n" );
-      #define JAVA_SUCCESS_FILE     "..\\temp\\java_success"
-      #define JAVA_PRETTY_TEMP_FILE "..\\temp\\CoreJavaPretty.tmp"
-      fileDelete( JAVA_SUCCESS_FILE );      
-      system( "javac -cp . -d . \"..\\src\\tools\\gen_code\\java\\PrettyCode.java" );
-      system( "javac -cp . -d . \"..\\src\\tools\\gen_code\\java\\Main.java" );
-      system( "java -cp . Main" );
-      tempFile = fileOpen(JAVA_SUCCESS_FILE,NULL,FILE_READ );
-      fileDelete( FILE_CORE_JAVA_UNF );
-
-      if( tempFile == NULL )
-      {                  
-         printf( "\nWarning: Java code NOT updated.\n" );
-      }
-      else
-      {
-
-         fileClose( tempFile );
-
-         /* Java processing done. Overwrite the original Core.java ONLY if there
-          * is changes (re-use fileOpen/fileClose even if not efficient).
-          */
-         tempFile = fileOpen( JAVA_PRETTY_TEMP_FILE, NULL, FILE_READ );
-         tempFileOut = fileOpen( FILE_CORE_JAVA, NULL,
-                                 FILE_WRITE|WRITE_ON_CHANGE_ONLY );
-
-         if( (tempFile == NULL) || (tempFileOut == NULL) )
-         {
-            printf( "\nError: Java code update failed.\n" );
-            return -1;
-         }
-         else
-         {
-            
-            while( fgets( gTempBuf, BUFFER_SIZE, tempFile->file ) )
-               fputs(gTempBuf,tempFileOut->file);            
-
-            fileClose(tempFile);
-            fileClose(tempFileOut);
-         }      
-      }
-      fileDelete( JAVA_SUCCESS_FILE );
-      fileDelete( JAVA_PRETTY_TEMP_FILE );
-   #endif
-
-   /* Remove temporary files. */
-   #ifdef _MSC_VER   
-      fileDelete( FILE_NET_PROJ_TMP );
-      fileDelete( FILE_MSVC_PROJ_TMP );
-      fileDelete( FILE_NET_HEADER_TMP );   
-   #endif
 
    printf( "\n** Update completed with success **\n");
 
@@ -1229,21 +937,21 @@ static void doForEachFunctionXml(const TA_FuncInfo *funcInfo,
 	char tempString[8*1024];
 	unsigned int i;
 
-    (void)opaqueData;
+   (void)opaqueData;
 
 	/* General stuff about function */
 	fprintf(gOutFunc_XML->file, "	<!-- %s -->\n", funcInfo->name);
 	fprintf(gOutFunc_XML->file, "	<FinancialFunction>\n");
-    fprintf(gOutFunc_XML->file, "		<Abbreviation>%s</Abbreviation>\n", (funcInfo->name == NULL)? "" : funcInfo->name);
-    fprintf(gOutFunc_XML->file, "		<CamelCaseName>%s</CamelCaseName>\n", (funcInfo->camelCaseName == NULL)? "" : funcInfo->camelCaseName);
+   fprintf(gOutFunc_XML->file, "		<Abbreviation>%s</Abbreviation>\n", (funcInfo->name == NULL)? "" : funcInfo->name);
+   fprintf(gOutFunc_XML->file, "		<CamelCaseName>%s</CamelCaseName>\n", (funcInfo->camelCaseName == NULL)? "" : funcInfo->camelCaseName);
 	ReplaceReservedXmlCharacters(funcInfo->hint, tempString);
-    fprintf(gOutFunc_XML->file, "		<ShortDescription>%s</ShortDescription>\n", (funcInfo->hint == NULL)? "" : tempString);
-    fprintf(gOutFunc_XML->file, "		<GroupId>%s</GroupId>\n", funcInfo->group);
+   fprintf(gOutFunc_XML->file, "		<ShortDescription>%s</ShortDescription>\n", (funcInfo->hint == NULL)? "" : tempString);
+   fprintf(gOutFunc_XML->file, "		<GroupId>%s</GroupId>\n", funcInfo->group);
 
 	/* Optional function flags */
 	if(funcInfo->flags & (TA_FUNC_FLG_OVERLAP | TA_FUNC_FLG_VOLUME | TA_FUNC_FLG_CANDLESTICK | TA_FUNC_FLG_UNST_PER))
 	{
-	    fprintf(gOutFunc_XML->file, "		<Flags>\n");
+	   fprintf(gOutFunc_XML->file, "		<Flags>\n");
 		if(funcInfo->flags & TA_FUNC_FLG_OVERLAP)
 		{
 			fprintf(gOutFunc_XML->file, "			<Flag>Overlap</Flag>\n");
@@ -1524,12 +1232,7 @@ static void doForEachFunctionPhase1( const TA_FuncInfo *funcInfo,
 {
 	(void)opaqueData;
 
-   #ifdef _MSC_VER
-      /* Run the func file through the pre-processor to generate the Java code. */
-      genJavaCodePhase1( funcInfo );      
-   #else
-	  (void)funcInfo;
-   #endif
+   (void)funcInfo;
 }
 
 static void doForEachFunctionPhase2( const TA_FuncInfo *funcInfo,
@@ -1544,7 +1247,6 @@ static void doForEachFunctionPhase2( const TA_FuncInfo *funcInfo,
    fprintf( gOutFuncList_TXT->file, "%-20s%s\n", funcInfo->name, funcInfo->hint );
   
    fprintf( gOutFunc_H->file, "\n" );
-   fprintf( gOutFunc_SWG->file, "\n" );
 
    printf( "Processing [TA_%s]\n", funcInfo->name );
 
@@ -1552,28 +1254,18 @@ static void doForEachFunctionPhase2( const TA_FuncInfo *funcInfo,
    printFuncHeaderDoc( gOutFunc_H->file, funcInfo, " * " );
    fprintf( gOutFunc_H->file, " */\n" );
 
-   fprintf( gOutFunc_SWG->file, "/*\n" );
-   printFuncHeaderDoc( gOutFunc_SWG->file, funcInfo, " * " );
-   fprintf( gOutFunc_SWG->file, " */\n" );
-
    /* Generate the defines corresponding to this function. */
    printDefines( gOutFunc_H->file, funcInfo );
-   printDefines( gOutFunc_SWG->file, funcInfo );
 
    /* Generate the function prototype. */
-   printFunc( gOutFunc_H->file, NULL, funcInfo, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
+   printFunc( gOutFunc_H->file, NULL, funcInfo, 1, 0, 1, 0, 0, 0, 0 );
    fprintf( gOutFunc_H->file, "\n" );
 
-   printFunc( gOutFunc_H->file, NULL, funcInfo, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 );
+   printFunc( gOutFunc_H->file, NULL, funcInfo, 1, 0, 1, 0, 0, 1, 0 );
    fprintf( gOutFunc_H->file, "\n" );
-
-   /* Generate the SWIG interface. */
-   printFunc( gOutFunc_SWG->file, NULL, funcInfo, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 );
-   fprintf( gOutFunc_SWG->file, "\n" );
 
    /* Generate the corresponding lookback function prototype. */
-   printFunc( gOutFunc_H->file, NULL, funcInfo, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 );
-   printFunc( gOutFunc_SWG->file, NULL, funcInfo, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 );
+   printFunc( gOutFunc_H->file, NULL, funcInfo, 1, 0, 1, 0, 1, 0, 0 );
 
    /* Create the frame definition (ta_frame.c) and declaration (ta_frame.h) */
    genPrefix = 1;
@@ -1590,87 +1282,11 @@ static void doForEachFunctionPhase2( const TA_FuncInfo *funcInfo,
       fprintf( gOutMakefile_AM->file, " \\\n\tta_%s.c", funcInfo->name );
    
    #ifdef _MSC_VER
-      /* Add the entry in the .NET project file. */
-      fprintf( gOutProjFile->file, "				<File\n" );
-      fprintf( gOutProjFile->file, "					RelativePath=\"..\\..\\..\\c\\src\\ta_func\\ta_%s.c\">\n", funcInfo->name );
-      fprintf( gOutProjFile->file, "					<FileConfiguration\n" );
-      fprintf( gOutProjFile->file, "						Name=\"Debug|Win32\">\n" );
-      fprintf( gOutProjFile->file, "						<Tool\n" );
-      fprintf( gOutProjFile->file, "							Name=\"VCCLCompilerTool\"\n" );
-      fprintf( gOutProjFile->file, "							AdditionalIncludeDirectories=\"\"\n" );
-      fprintf( gOutProjFile->file, "							UsePrecompiledHeader=\"0\"\n" );
-      fprintf( gOutProjFile->file, "							CompileAs=\"2\"/>\n" );
-      fprintf( gOutProjFile->file, "					</FileConfiguration>\n" );
-      fprintf( gOutProjFile->file, "					<FileConfiguration\n" );
-      fprintf( gOutProjFile->file, "						Name=\"Release|Win32\">\n" );
-      fprintf( gOutProjFile->file, "						<Tool\n" );
-      fprintf( gOutProjFile->file, "							Name=\"VCCLCompilerTool\"\n" );
-      fprintf( gOutProjFile->file, "							AdditionalIncludeDirectories=\"\"\n" );
-      fprintf( gOutProjFile->file, "							UsePrecompiledHeader=\"0\"\n" );
-      fprintf( gOutProjFile->file, "							CompileAs=\"2\"/>\n" );
-      fprintf( gOutProjFile->file, "					</FileConfiguration>\n" );
-      fprintf( gOutProjFile->file, "					<FileConfiguration\n" );
-      fprintf( gOutProjFile->file, "						Name=\"Debug SubArray|Win32\">\n" );
-      fprintf( gOutProjFile->file, "						<Tool\n" );
-      fprintf( gOutProjFile->file, "							Name=\"VCCLCompilerTool\"\n" );
-      fprintf( gOutProjFile->file, "							AdditionalIncludeDirectories=\"\"\n" );
-      fprintf( gOutProjFile->file, "							UsePrecompiledHeader=\"0\"\n" );
-      fprintf( gOutProjFile->file, "							CompileAs=\"2\"/>\n" );
-      fprintf( gOutProjFile->file, "					</FileConfiguration>\n" );
-      fprintf( gOutProjFile->file, "					<FileConfiguration\n" );
-      fprintf( gOutProjFile->file, "						Name=\"Release SubArray|Win32\">\n" );
-      fprintf( gOutProjFile->file, "						<Tool\n" );
-      fprintf( gOutProjFile->file, "							Name=\"VCCLCompilerTool\"\n" );
-      fprintf( gOutProjFile->file, "							AdditionalIncludeDirectories=\"\"\n" );
-      fprintf( gOutProjFile->file, "							UsePrecompiledHeader=\"0\"\n" );
-      fprintf( gOutProjFile->file, "							CompileAs=\"2\"/>\n" );
-      fprintf( gOutProjFile->file, "					</FileConfiguration>\n" );
-      fprintf( gOutProjFile->file, "				</File>\n" );
-
-      /* Add the entry in the MSVC project file. */
-      fprintf( gOutMSVCProjFile->file, "# Begin Source File\n" );
-      fprintf( gOutMSVCProjFile->file, "\n" );
-      fprintf( gOutMSVCProjFile->file, "SOURCE=..\\..\\..\\..\\src\\ta_func\\ta_%s.c\n", funcInfo->name );
-      fprintf( gOutMSVCProjFile->file, "# End Source File\n" );
-
       /* Add the entry in the VS2005 project file. */
 	  printVS2005FileNode( gOutVS2005ProjFile->file, funcInfo->name );
-
-      /* Generate the excel glue code */
-      printExcelGlueCode( gOutExcelGlue_C->file, funcInfo );
-
-      /* Generate CoreAnnotated */
-      printJavaFunctionAnnotation( funcInfo );
-
-      /* Generate the functions declaration for the .NET interface. */
-      printFunc( gOutDotNet_H->file, NULL, funcInfo, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 );
-
-	  fprintf( gOutDotNet_H->file, "         #if defined( _MANAGED ) && defined( USE_SUBARRAY )\n" );   
-	  printFunc( gOutDotNet_H->file, NULL, funcInfo, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 );
-	  fprintf( gOutDotNet_H->file, "\n" );
-
-	  printFunc( gOutDotNet_H->file, NULL, funcInfo, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0 );
-
-	  fprintf( gOutDotNet_H->file, "         { return " );
-	  printFunc( gOutDotNet_H->file, NULL, funcInfo, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1 );
-	  fprintf( gOutDotNet_H->file, "         }\n" );
-
-	  fprintf( gOutDotNet_H->file, "         #elif defined( _MANAGED )\n" );
-	  printFunc( gOutDotNet_H->file, NULL, funcInfo, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0 );
-	  fprintf( gOutDotNet_H->file, "         #endif\n" );
-
-	  printFunc( gOutDotNet_H->file, NULL, funcInfo, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0 );
-	  fprintf( gOutDotNet_H->file, "\n" );
-	  fprintf( gOutDotNet_H->file, "         #define TA_%s Core::%s\n", funcInfo->name, funcInfo->camelCaseName );
-	  fprintf( gOutDotNet_H->file, "         #define TA_%s_Lookback Core::%sLookback\n\n", funcInfo->name, funcInfo->camelCaseName );
    #endif
 
    doFuncFile( funcInfo );
-
-   #ifdef _MSC_VER
-      /* Run the func file through the pre-processor to generate the Java code. */
-      genJavaCodePhase2( funcInfo );   
-   #endif
 
    firstTime = 0;
 }
@@ -1796,14 +1412,8 @@ static void printFunc( FILE *out,
                        unsigned int semiColonNeeded, /* Boolean */
                        unsigned int validationCode, /* Boolean */
                        unsigned int lookbackSignature, /* Boolean */
-                       unsigned int managedCPPCode, /* Boolean */
-                       unsigned int managedCPPDeclaration, /* Boolean */
                        unsigned int inputIsSinglePrecision, /* Boolean */
-                       unsigned int outputForSWIG, /* Boolean */
-                       unsigned int outputForJava, /* Boolean */
-                       unsigned int lookbackValidationCode, /* Boolean */
-					   unsigned int useSubArrayObject,      /* Boolean */
-					   unsigned int arrayToSubArrayCnvt     /* Boolean */
+                       unsigned int lookbackValidationCode /* Boolean */
                       )
 {
    TA_RetCode retCode;
@@ -1823,7 +1433,6 @@ static void printFunc( FILE *out,
    const char *outputIntParam;
    const char *arrayBracket;
    const char *funcName;
-   int excludeFromManaged;
    int isMAType;
 
    const char *startIdxString;
@@ -1831,99 +1440,20 @@ static void printFunc( FILE *out,
    const char *outNbElementString;
    const char *outBegIdxString;
 
-   char funcNameBuffer[1024]; /* Not safe, but 1024 is realistic, */
-
-   if( arrayToSubArrayCnvt )
-   {
-      inputIntArrayType     = " ";
-	  inputDoubleArrayType  = " ";
-      outputDoubleArrayType = " ";
-      outputIntArrayType    = " ";
-      outputIntParam        = " ";
-      arrayBracket          = " ";
-      startIdxString        = "startIdx";
-      endIdxString          = "endIdx";
-      outNbElementString    = "outNBElement";
-      outBegIdxString       = "outBegIdx";
-      funcName              = funcInfo->camelCaseName;
-   }
-   else if( managedCPPCode )
-   {
-	  if( inputIsSinglePrecision )
-	  {
-          inputDoubleArrayType  = "cli::array<float>^";
-	  }
-	  else
-	  {
-		  inputDoubleArrayType  = useSubArrayObject? "SubArray^":"cli::array<double>^";         
-	  }
-
-      inputIntArrayType     = "cli::array<int>^";
-      outputDoubleArrayType = "cli::array<double>^";
-      outputIntArrayType    = "cli::array<int>^";
-      outputIntParam        = "[Out]int%";
-      arrayBracket          = "";
-      startIdxString        = "startIdx";
-      endIdxString          = "endIdx";
-      outNbElementString    = "outNBElement";
-      outBegIdxString       = "outBegIdx";
-      funcName              = funcInfo->camelCaseName;
-   }
-   else if( outputForSWIG )
-   {
-      if( inputIsSinglePrecision )
-         inputDoubleArrayType  = "const float  *";
-      else
-         inputDoubleArrayType  = "const double *";
-      inputIntArrayType     = "const int    *";
-      outputIntArrayType    = "int";
-      outputDoubleArrayType = "double";
-      outputIntParam        = "int";
-      arrayBracket          = "";
-      startIdxString        = "       START_IDX";
-      endIdxString          = "       END_IDX";
-      outNbElementString    = "OUT_SIZE";
-      outBegIdxString       = "BEG_IDX";
-      funcName              = funcInfo->name;
-   }
-   else if( outputForJava )
-   {
-      if( inputIsSinglePrecision )
-         inputDoubleArrayType  = "float";
-      else
-         inputDoubleArrayType  = "double";
-      inputIntArrayType     = "int";
-      outputDoubleArrayType = "double";
-      outputIntArrayType    = "int";
-      outputIntParam        = "MInteger";
-      arrayBracket          = "[]";
-      startIdxString        = "startIdx";
-      endIdxString          = "endIdx";
-      outNbElementString    = "outNBElement";
-      outBegIdxString       = "outBegIdx";
-      funcName              = funcNameBuffer;
-
-      /* For Java, first letter is always lowercase. */
-      strcpy( funcNameBuffer, funcInfo->camelCaseName );
-      funcNameBuffer[0] = tolower(funcNameBuffer[0]);      
-   }
+   if( inputIsSinglePrecision )
+      inputDoubleArrayType  = "const float";
    else
-   {
-      if( inputIsSinglePrecision )
-         inputDoubleArrayType  = "const float";
-      else
-         inputDoubleArrayType  = "const double";
-      inputIntArrayType     = "const int";
-      outputDoubleArrayType = "double";
-      outputIntArrayType    = "int";
-      outputIntParam        = "int";
-      arrayBracket          = "[]";
-      startIdxString        = "startIdx";
-      endIdxString          = "endIdx";
-      outNbElementString    = "outNBElement";
-      outBegIdxString       = "outBegIdx";
-      funcName              = funcInfo->name;
-   }
+      inputDoubleArrayType  = "const double";
+   inputIntArrayType     = "const int";
+   outputDoubleArrayType = "double";
+   outputIntArrayType    = "int";
+   outputIntParam        = "int";
+   arrayBracket          = "[]";
+   startIdxString        = "startIdx";
+   endIdxString          = "endIdx";
+   outNbElementString    = "outNBElement";
+   outBegIdxString       = "outBegIdx";
+   funcName              = funcInfo->name;
 
    typeString = "";
    defaultParamName = "";
@@ -1932,80 +1462,34 @@ static void printFunc( FILE *out,
    {
       if( lookbackSignature )
       {  
-         if( managedCPPCode )
-         {       
-            sprintf( gTempBuf, "%s%sint %s%sLookback( ",
-                     prefix? prefix:"",
-                     managedCPPDeclaration? "         static ":"",
-                     managedCPPDeclaration? "":"Core::",
-                     funcName );
-         }
-         else if( outputForJava )
-         {         
-            sprintf( gTempBuf, "%spublic int %sLookback( ",
-                     prefix? prefix:"",
-                     funcName );
-         }
-         else
-         {
-            sprintf( gTempBuf, "%sint TA_%s_Lookback( ",
-                     prefix? prefix:"",
-                     funcName );
-         }
+         sprintf( gTempBuf, "%sint TA_%s_Lookback( ",
+                  prefix? prefix:"",
+                  funcName );
          print( out, gTempBuf );
          indent = (unsigned int)strlen(gTempBuf) - 2;
       }
       else
       {
-         if( arrayToSubArrayCnvt )
-		 {			 
-			 sprintf( gTempBuf, "%s%s( %s, ", prefix? prefix:"", funcName, startIdxString );
-		 }
-         else if( managedCPPCode )
-         {
-            sprintf( gTempBuf, "%s%senum class %sRetCode %s%s( int    %s,\n",
+         if( inputIsSinglePrecision )
+            sprintf( gTempBuf, "%sTA_RetCode TA_S_%s( int    %s,\n",
                      prefix? prefix:"",
-                     managedCPPDeclaration? "         static ":"",
-                     managedCPPDeclaration? "":"Core::",
-                     managedCPPDeclaration? "":"Core::",
                      funcName,
                      startIdxString );
-         }
-         else if( outputForJava )
-         {
-               sprintf( gTempBuf, "%spublic RetCode %s( int    %s,\n",
-                        prefix? prefix:"",                        
-                        funcName,
-                        startIdxString );
-         }
-         else
-         {
-            if( inputIsSinglePrecision )
-               sprintf( gTempBuf, "%sTA_RetCode TA_S_%s( int    %s,\n",
-                        prefix? prefix:"",
-                        funcName,
-                        startIdxString );
-            else  
-               sprintf( gTempBuf, "%sTA_RetCode TA_%s( int    %s,\n",
-                        prefix? prefix:"",                        
-                        funcName,
-                        startIdxString );
-         }
+         else  
+            sprintf( gTempBuf, "%sTA_RetCode TA_%s( int    %s,\n",
+                     prefix? prefix:"",                        
+                     funcName,
+                     startIdxString );
+
          print( out, gTempBuf );
          indent = (unsigned int)strlen(gTempBuf);
          
-         if( outputForSWIG ) 
-            indent -= 25;
-         else
-            indent -= 17;
+         indent -= 17;
 
 		 if( indent < 0 ) indent = 0;		 
 
          printIndent( out, indent );
-		 if( arrayToSubArrayCnvt )
-            fprintf( out, "%s,\n", endIdxString );
-		 else
-			fprintf( out, "int    %s,\n", endIdxString );
+		 fprintf( out, "int    %s,\n", endIdxString );
       }
    }
    else if( frame )
@@ -2049,12 +1533,6 @@ static void printFunc( FILE *out,
    /* Go through all the input. */
    if( !lookbackSignature && !lookbackValidationCode )
    {
-      if( validationCode )
-      {
-         printIndent( out, indent );
-         fprintf( out, "#if !defined(_JAVA)\n" );
-      }
-
       paramNb = 0;
       for( i=0; i < funcInfo->nbInput; i++ )
       {
@@ -2156,12 +1634,10 @@ static void printFunc( FILE *out,
                   printIndent( out, indent );
                   if( frame )
                      fprintf( out, "params->in[%d].data.inPrice.open, /*", paramNb );
-                  fprintf( out, "%-*s%s%s%s",
+                  fprintf( out, "%-*s %s%s",
                          prototype? 12 : 0,
                          prototype? inputDoubleArrayType : "",
-                         outputForSWIG?"":" ",
-                         outputForSWIG? "IN_ARRAY /* inOpen */":
-						 arrayToSubArrayCnvt? "gcnew SubArray(inOpen,0)" : "inOpen",
+                         "inOpen",
                          prototype? arrayBracket : "" );
                   fprintf( out, "%s\n", frame? " */":"," );
                }
@@ -2171,12 +1647,10 @@ static void printFunc( FILE *out,
                   printIndent( out, indent );
                   if( frame )
                      fprintf( out, "params->in[%d].data.inPrice.high, /*", paramNb );
-                  fprintf( out, "%-*s%s%s%s",
+                  fprintf( out, "%-*s %s%s",
                          prototype? 12 : 0,
                          prototype? inputDoubleArrayType : "",                           
-                         outputForSWIG?"":" ",
-                         outputForSWIG? "IN_ARRAY /* inHigh */":
-						 arrayToSubArrayCnvt? "gcnew SubArray(inHigh,0)" : "inHigh",
+                         "inHigh",
                          prototype? arrayBracket : "" );
                   fprintf( out, "%s\n", frame? " */":"," );
                }
@@ -2186,12 +1660,10 @@ static void printFunc( FILE *out,
                   printIndent( out, indent );
                   if( frame )
                      fprintf( out, "params->in[%d].data.inPrice.low, /*", paramNb );
-                  fprintf( out, "%-*s%s%s%s",
+                  fprintf( out, "%-*s %s%s",
                          prototype? 12 : 0,
                          prototype? inputDoubleArrayType : "",
-                         outputForSWIG?"":" ",
-                         outputForSWIG? "IN_ARRAY /* inLow */":
-						 arrayToSubArrayCnvt? "gcnew SubArray(inLow,0)" : "inLow",
+                         "inLow",
                          prototype? arrayBracket : "" );
                   fprintf( out, "%s\n", frame? " */":"," );
                }
@@ -2201,12 +1673,10 @@ static void printFunc( FILE *out,
                   printIndent( out, indent );
                   if( frame )
                      fprintf( out, "params->in[%d].data.inPrice.close, /*", paramNb );
-                  fprintf( out, "%-*s%s%s%s",
+                  fprintf( out, "%-*s %s%s",
                          prototype? 12 : 0,
                          prototype? inputDoubleArrayType : "",                           
-                         outputForSWIG?"":" ",
-                         outputForSWIG? "IN_ARRAY /* inClose */":
-						 arrayToSubArrayCnvt? "gcnew SubArray(inClose,0)" : "inClose",
+                         "inClose",
                          prototype? arrayBracket : "" );
                   fprintf( out, "%s\n", frame? " */":"," );
                }
@@ -2216,27 +1686,10 @@ static void printFunc( FILE *out,
                   printIndent( out, indent );
                   if( frame )
                      fprintf( out, "params->in[%d].data.inPrice.volume, /*", paramNb );
-                  fprintf( out, "%-*s%s%s%s",
+                  fprintf( out, "%-*s %s%s",
                          prototype? 12 : 0,
                          prototype? inputDoubleArrayType : "",
-                         outputForSWIG?"":" ",
-                         outputForSWIG? "IN_ARRAY /* inVolume */":
-						 arrayToSubArrayCnvt? "gcnew SubArray(inVolume,0)" : "inVolume",
-                         prototype? arrayBracket : "" );
-                  fprintf( out, "%s\n", frame? " */":"," );
-               }
-
-               if( inputParamInfo->flags & TA_IN_PRICE_OPENINTEREST )
-               {
-                  printIndent( out, indent );
-                  if( frame )
-                     fprintf( out, "params->in[%d].data.inPrice.openInterest, /*", paramNb );
-                  fprintf( out, "%-*s%s%s%s",
-                         prototype? 12 : 0,
-                         prototype? inputDoubleArrayType : "",
-                         outputForSWIG?"":" ",
-                         outputForSWIG? "IN_ARRAY /* inOpenInterest */":
-						 arrayToSubArrayCnvt? "gcnew SubArray(inOpenInterest,0)" : "inOpenInterest",
+                         "inVolume",
                          prototype? arrayBracket : "" );
                   fprintf( out, "%s\n", frame? " */":"," );
                }
@@ -2244,12 +1697,11 @@ static void printFunc( FILE *out,
             break;
          case TA_Input_Real:
             typeString = inputDoubleArrayType;                         
-            defaultParamName = outputForSWIG? "IN_ARRAY":
-				arrayToSubArrayCnvt? "gcnew SubArray(inReal,0)" : "inReal";
+            defaultParamName = "inReal";
             break;
          case TA_Input_Integer:
             typeString = inputIntArrayType;
-            defaultParamName = outputForSWIG? "IN_ARRAY":"inInteger";
+            defaultParamName = "inInteger";
             break;
          default:
             if( !paramName )
@@ -2267,43 +1719,24 @@ static void printFunc( FILE *out,
                fprintf( out, "if( !%s ) return ENUM_VALUE(RetCode,TA_BAD_PARAM,BadParam);\n", inputParamInfo->paramName );
             else
             {
-				
                if( frame )
                   fprintf( out, "params->in[%d].data.%s, /*", paramNb, defaultParamName );
-               if( outputForSWIG )
-                  fprintf( out, "%-*s%s%s /* %s */",
-                           prototype? 12 : 0,
-                           prototype? typeString : "",
-                           defaultParamName,
-                           prototype? arrayBracket : "",
-                           inputParamInfo->paramName );
-               else
-			   {
-				   if( arrayToSubArrayCnvt )
-				   {
-                  fprintf( out, "%-*sgcnew SubArray(%s,0)",
-                           prototype? 12 : 0, "",                          
-                           inputParamInfo->paramName );
-				   }
-				   else
-				   {
-                  fprintf( out, "%-*s %s%s",
-                           prototype? 12 : 0,
-                           prototype? typeString : "",
-                           inputParamInfo->paramName,
-                           prototype? arrayBracket : "" );
-				   }
-			   }
+
+               fprintf( out, "%-*s %s%s",
+                        prototype? 12 : 0,
+                        prototype? typeString : "",
+                        inputParamInfo->paramName,
+                        prototype? arrayBracket : "" );
+
                fprintf( out, "%s\n", frame? " */":"," );
             }
          }
          paramNb++;
       }
 
-      if( validationCode )
+      if( validationCode && funcInfo->nbInput )
       {
          printIndent( out, indent );
-         fprintf( out, "#endif /* !defined(_JAVA)*/\n" );
       }
    }
 
@@ -2312,8 +1745,6 @@ static void printFunc( FILE *out,
    lastParam = 0;
    for( i=0; i < funcInfo->nbOptInput; i++ )
    {
-      excludeFromManaged = 0;
-
       if( (i == (funcInfo->nbOptInput-1)) && lookbackSignature )
          lastParam = 1;
 
@@ -2330,7 +1761,7 @@ static void printFunc( FILE *out,
 
 	  /* Boolean to detect special TA_MAType enumeration. */
 	  if( optInputParamInfo->dataSet == TA_DEF_UI_MA_Method.dataSet )
-	     isMAType = 1;
+	      isMAType = 1;
 	  else
          isMAType = 0;
 
@@ -2339,24 +1770,22 @@ static void printFunc( FILE *out,
       case TA_OptInput_RealRange:
       case TA_OptInput_RealList:
          typeString = "double";
-         defaultParamName = outputForSWIG? "OPT_REAL":"optInReal";
+         defaultParamName = "optInReal";
          break;
       case TA_OptInput_IntegerRange:
          typeString = "int";
-         defaultParamName = outputForSWIG? "OPT_INT":"optInInteger";
+         defaultParamName = "optInInteger";
          break;
       case TA_OptInput_IntegerList:
          if( isMAType && !frame )
          {
-
-            typeString = managedCPPCode||outputForJava? "MAType":"TA_MAType";
-            defaultParamName = outputForSWIG? "OPT_MATYPE":"optInMAType";
-            excludeFromManaged = 1;
+            typeString = "TA_MAType";
+            defaultParamName = "optInMAType";
          }
          else
          {
             typeString = "int";
-            defaultParamName = outputForSWIG? "OPT_INT":"optInInteger";
+            defaultParamName = "optInInteger";
          }
          break;
       default:
@@ -2368,27 +1797,12 @@ static void printFunc( FILE *out,
          return;
       }
 
-	  if( arrayToSubArrayCnvt )
-	     typeString = "";
-
       if( !paramName )
          paramName = defaultParamName;
       
       if( validationCode )
       {
-         if( excludeFromManaged )
-         {
-             printIndent( out, indent );
-             fprintf( out, "#if !defined(_MANAGED) && !defined(_JAVA)\n" );
-         }
-
          printOptInputValidation( out, paramName, optInputParamInfo, lookbackValidationCode );
-
-         if( excludeFromManaged )
-         {
-             printIndent( out, indent );
-             fprintf( out, "#endif /* !defined(_MANAGED) && !defined(_JAVA)*/\n" );
-         }
       }
       else
       {
@@ -2402,16 +1816,11 @@ static void printFunc( FILE *out,
                      paramNb, defaultParamName,
                      lookbackSignature&&lastParam?"":"," );
          }
-         if( outputForSWIG )
-            fprintf( out, "%-*s %s /* %s */",
-                     prototype? 13 : 0,
-                     prototype? typeString : "",
-                     defaultParamName, paramName );
-         else
-            fprintf( out, "%-*s %s",
-                     prototype? 13 : 0,
-                     prototype? typeString : "",
-                     paramName );
+
+         fprintf( out, "%-*s %s",
+                  prototype? 13 : 0,
+                  prototype? typeString : "",
+                  paramName );
                 
          if( frame )
          {
@@ -2483,7 +1892,7 @@ static void printFunc( FILE *out,
 
    if( lookbackSignature && (funcInfo->nbOptInput == 0) )
    {
-      if( frame || outputForJava )
+      if( frame )
          fprintf( out, " )%s\n", semiColonNeeded? ";":"" );
       else      
          fprintf( out, "void )%s\n", semiColonNeeded? ";":"" );
@@ -2502,34 +1911,28 @@ static void printFunc( FILE *out,
 
       if( !validationCode )
       {
-            printIndent( out, indent );
-            if( frame )
-               fprintf( out, "%s, ", outBegIdxString );
-            else
-               fprintf( out, "%-*s %s%s",
-                      prototype? 12 : 0,
-                      prototype? outputIntParam : "",
-                      prototype&&!managedCPPCode&&!outputForJava? "*" : "",
-                      outBegIdxString );
+         printIndent( out, indent );
+         if( frame )
+            fprintf( out, "%s, ", outBegIdxString );
+         else
+            fprintf( out, "%-*s %s%s",
+                     prototype? 12 : 0,
+                     prototype? outputIntParam : "",
+                     prototype ? "*" : "",
+                     outBegIdxString );
 
-            fprintf( out, "%s\n", frame? "":"," );
+         fprintf( out, "%s\n", frame? "":"," );
 
-            printIndent( out, indent );
-            if( frame )
-               fprintf( out, "%s, ", outNbElementString );
-            else
-               fprintf( out, "%-*s %s%s",
-                      prototype? 12 : 0,
-                      prototype? outputIntParam : "",
-                      prototype&&!managedCPPCode&&!outputForJava? "*" : "",
-                      outNbElementString );
-            fprintf( out, "%s\n", frame? "":"," );
-      }
-
-      if( validationCode )
-      {
-         printIndent( out, indent );         
-         fprintf( out, "#if !defined(_JAVA)\n" );
+         printIndent( out, indent );
+         if( frame )
+            fprintf( out, "%s, ", outNbElementString );
+         else
+            fprintf( out, "%-*s %s%s",
+                     prototype? 12 : 0,
+                     prototype? outputIntParam : "",
+                     prototype ? "*" : "",
+                     outNbElementString );
+         fprintf( out, "%s\n", frame? "":"," );
       }
 
       for( i=0; i < funcInfo->nbOutput; i++ )
@@ -2552,11 +1955,11 @@ static void printFunc( FILE *out,
          {
          case TA_Output_Real:
             typeString = outputDoubleArrayType;
-            defaultParamName = outputForSWIG? "OUT_ARRAY":"outReal";
+            defaultParamName = "outReal";
             break;
          case TA_Output_Integer:
             typeString = outputIntArrayType;;
-            defaultParamName = outputForSWIG? "OUT_ARRAY":"outInteger";
+            defaultParamName = "outInteger";
             break;
          default:
             if( !paramName )
@@ -2584,19 +1987,11 @@ static void printFunc( FILE *out,
                       paramNb, defaultParamName,
                       lastParam? "":"," );
 
-            if( outputForSWIG )
-               fprintf( out, "%-*s *%s%s /* %s */",
-                        prototype? 12 : 0,
-                        prototype? typeString : "",                     
-                        defaultParamName,
-                        prototype? arrayBracket : "",
-                        paramName );
-            else
-               fprintf( out, "%-*s  %s%s",
-                        prototype? 12 : 0,
-                        prototype? typeString : "",                     
-                        paramName,
-                        prototype? arrayBracket : "" );
+            fprintf( out, "%-*s  %s%s",
+                     prototype? 12 : 0,
+                     prototype? typeString : "",                     
+                     paramName,
+                     prototype? arrayBracket : "" );
 
             if( !lastParam )
                fprintf( out, "%s\n", frame? " */":"," );
@@ -2610,13 +2005,6 @@ static void printFunc( FILE *out,
 
          paramNb++;
       }
-
-      if( validationCode )
-      {
-         printIndent( out, indent );
-         fprintf( out, "#endif /* !defined(_JAVA) */\n" );
-      }
-
    }
 
 }
@@ -2627,14 +2015,14 @@ static void printCallFrame( FILE *out, const TA_FuncInfo *funcInfo )
 
    printFrameHeader( out, funcInfo, 0 );
    print( out, "{\n" );
-   printFunc( out, "   return ", funcInfo, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
+   printFunc( out, "   return ", funcInfo, 0, 1, 1, 0, 0, 0, 0 );
    print( out, "}\n" );
 
    printFrameHeader( out, funcInfo, 1 );
    print( out, "{\n" );
    if( funcInfo->nbOptInput == 0 )
       print( out, "   (void)params;\n" );
-   printFunc( out, "   return ", funcInfo, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 );
+   printFunc( out, "   return ", funcInfo, 0, 1, 1, 0, 1, 0, 0 );
    print( out, "}\n" );
    
    genPrefix = 0;
@@ -2842,13 +2230,7 @@ static void doFuncFile( const TA_FuncInfo *funcInfo )
    print( gOutFunc_C->file, "#undef   INPUT_TYPE\n" );
    print( gOutFunc_C->file, "#define  INPUT_TYPE float\n" );
 
-   print( gOutFunc_C->file, "#if defined( _MANAGED )\n" );
-   printFunc( gOutFunc_C->file, NULL, funcInfo, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0 );
-   print( gOutFunc_C->file, "#elif defined( _JAVA )\n" );
-   printFunc( gOutFunc_C->file, NULL, funcInfo, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0 );
-   print( gOutFunc_C->file, "#else\n" );
-   printFunc( gOutFunc_C->file, NULL, funcInfo, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 );
-   print( gOutFunc_C->file, "#endif\n" );
+   printFunc( gOutFunc_C->file, NULL, funcInfo, 1, 0, 0, 0, 0, 1, 0 );
 
    /* Insert the internal logic of the function */
    init_gToOpen( LOGIC_TEMP, NULL );
@@ -2931,111 +2313,6 @@ static void doDefsFile( void )
 }
 
 #ifdef _MSC_VER
-static int createProjTemplate( FileHandle *in, FileHandle *out )
-{
-   FILE *inFile;
-   FILE *outFile;
-   unsigned int skipSection;
-   unsigned int sectionDone;
-   unsigned int step;
-
-   inFile = in->file;
-   outFile = out->file;
-
-   skipSection = 0;
-   sectionDone = 0;
-   step        = 0;
-
-   while( fgets( gTempBuf, BUFFER_SIZE, inFile ) )
-   {
-      if( !skipSection )
-      {
-         fputs( gTempBuf, outFile );
-         if( !strstr( gTempBuf, "<Filter" ) )
-            continue;
-
-         if( !fgets( gTempBuf2, BUFFER_SIZE, inFile ) )
-         {
-            printf( "Unexpected end-of-file\n" );
-            return -1;
-         }
-         fputs( gTempBuf2, outFile );
-
-         if( !strstr( gTempBuf2, "Name=\"ta_func\"" ) )
-            continue;            
-
-         if( !fgets( gTempBuf3, BUFFER_SIZE, inFile ) )
-         {
-            printf( "Unexpected end-of-file\n" );
-            return -1;
-         }
-
-         fputs( gTempBuf3, outFile );
-
-         if( !strstr( gTempBuf3, ">" ) )
-            continue;            
-
-         skipSection = 1;
-         fputs( "%%%GENCODE%%%\n", outFile );
-      }
-      else if( strstr( gTempBuf, "</Filter>" ) )
-      {
-         skipSection = 0;
-         fputs( gTempBuf, outFile );
-         sectionDone++;
-      }
-   }
-
-   return 0;
-}
-
-static int createMSVCProjTemplate( FileHandle *in, FileHandle *out )
-{
-   FILE *inFile;
-   FILE *outFile;
-   unsigned int skipSection;
-
-   inFile = in->file;
-   outFile = out->file;
-
-   skipSection = 0;
-
-   while( !skipSection && fgets( gTempBuf, BUFFER_SIZE, inFile ) )
-   {
-      if( strstr( gTempBuf, "# Begin Source File") )
-         skipSection = 1;
-      else
-         fputs( gTempBuf, outFile );
-   }
-
-   if( !skipSection )
-   {
-      printf( "Unexpected end-of-file\n" );
-      return -1;
-   }
-
-   fputs( "%%%GENCODE%%%\n", outFile );
-
-   while( fgets( gTempBuf, BUFFER_SIZE, inFile ) )
-   {
-      if( strstr( gTempBuf, "# End Group" ) )
-      {
-         /* Add the "non TA function" source files. */
-         fprintf( outFile, "# Begin Source File\n");
-         fprintf( outFile, "\n");
-         fprintf( outFile, "SOURCE=..\\..\\..\\..\\src\\ta_func\\ta_utility.c\n");
-         fprintf( outFile, "# End Source File\n");
-         fprintf( outFile, "# End Group\n");
-         break;
-      }
-   }
-
-   while( fgets( gTempBuf, BUFFER_SIZE, inFile ) )
-      fputs( gTempBuf, outFile );
-
-   return 0;
-}
-
 static int createVS2005ProjTemplate( FileHandle *in, FileHandle *out )
 {
    FILE *inFile;
@@ -3224,19 +2501,9 @@ static void writeFuncFile( const TA_FuncInfo *funcInfo )
 
    genPrefix = 1;
    print( out, "\n" );
-   print( out, "#if defined( _MANAGED )\n" );
-   print( out, "   #include \"TA-Lib-Core.h\"\n" );
-   print( out, "   #define TA_INTERNAL_ERROR(Id) (RetCode::InternalError)\n" );
-   print( out, "   namespace TicTacTec { namespace TA { namespace Library {\n" );
-   print( out, "#elif defined( _JAVA )\n" );
-   print( out, "   #include \"ta_defs.h\"\n" );
-   print( out, "   #include \"ta_java_defs.h\"\n" );
-   print( out, "   #define TA_INTERNAL_ERROR(Id) (RetCode.InternalError)\n" );
-   print( out, "#else\n" );
-   print( out, "   #include <string.h>\n" );
-   print( out, "   #include <math.h>\n" );
-   print( out, "   #include \"ta_func.h\"\n" );   
-   print( out, "#endif\n" );
+   print( out, "#include <string.h>\n" );
+   print( out, "#include <math.h>\n" );
+   print( out, "#include \"ta_func.h\"\n" );   
    print( out, "\n" );
    print( out, "#ifndef TA_UTILITY_H\n" );
    print( out, "   #include \"ta_utility.h\"\n" );
@@ -3249,13 +2516,7 @@ static void writeFuncFile( const TA_FuncInfo *funcInfo )
    print( out, "#define TA_PREFIX(x) TA_##x\n" );
    print( out, "#define INPUT_TYPE   double\n" );
    print( out, "\n" );
-   print( out, "#if defined( _MANAGED )\n" );
-   printFunc( out, NULL, funcInfo, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0 );
-   print( out, "#elif defined( _JAVA )\n" );
-   printFunc( out, NULL, funcInfo, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0 );
-   print( out, "#else\n" );
-   printFunc( out, NULL, funcInfo, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 );
-   print( out, "#endif\n" );
+   printFunc( out, NULL, funcInfo, 1, 0, 0, 0, 1, 0, 0 );
 
    genPrefix = 0;
    skipToGenCode( funcInfo->name, gOutFunc_C->file, gOutFunc_C->templateFile );
@@ -3263,7 +2524,7 @@ static void writeFuncFile( const TA_FuncInfo *funcInfo )
    genPrefix = 1;
    if( funcInfo->nbOptInput != 0 )
       print( out, "#ifndef TA_FUNC_NO_RANGE_CHECK\n" );
-   printFunc( out, NULL, funcInfo, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0 );
+   printFunc( out, NULL, funcInfo, 0, 0, 0, 1, 0, 0, 1 );
    if( funcInfo->nbOptInput != 0 )     
      print( out, "#endif /* TA_FUNC_NO_RANGE_CHECK */\n" );
    else   
@@ -3277,22 +2538,7 @@ static void writeFuncFile( const TA_FuncInfo *funcInfo )
    printFuncHeaderDoc( out, funcInfo, " * " );
    fprintf( out, " */\n" );
    print( out, "\n" );
-   print( out, "#if defined( _MANAGED ) && defined( USE_SUBARRAY )\n" );   
-   printFunc( out, NULL, funcInfo, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0 );
-   print( out, "#elif defined( _MANAGED )\n" );
-   printFunc( out, NULL, funcInfo, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 );
-   print( out, "#elif defined( _JAVA )\n" );
-
-   /* Handle special case to avoid duplicate definition of min,max */
-   if( strcmp( funcInfo->camelCaseName, "Min" ) == 0 )
-      print( out, "#undef min\n" );
-   else if( strcmp( funcInfo->camelCaseName, "Max" ) == 0 )
-      print( out, "#undef max\n" );
-
-   printFunc( out, NULL, funcInfo, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 );
-   print( out, "#else\n" );
-   printFunc( out, NULL, funcInfo, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
-   print( out, "#endif\n" );
+   printFunc( out, NULL, funcInfo, 1, 0, 0, 0, 0, 0, 0 );
 
    genPrefix = 0;
    skipToGenCode( funcInfo->name, gOutFunc_C->file, gOutFunc_C->templateFile );
@@ -3311,7 +2557,7 @@ static void writeFuncFile( const TA_FuncInfo *funcInfo )
     * Also generates the code for setting up the
     * default values.
     */
-   printFunc( out, NULL, funcInfo, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
+   printFunc( out, NULL, funcInfo, 0, 0, 0, 1, 0, 0, 0 );
 
    print( out, "#endif /* TA_FUNC_NO_RANGE_CHECK */\n" );
    print( out, "\n" );
@@ -3396,7 +2642,7 @@ static void printOptInputValidation( FILE *out,
       print( out, "   /* min/max are checked for %s. */\n", name );
    case TA_OptInput_IntegerList:
       print( out, "   if( (int)%s == TA_INTEGER_DEFAULT )\n", name );
-	  print( out, "      %s = %s%d;\n", name, isMAType?"(TA_MAType)":"", (int)optInputParamInfo->defaultValue );
+	   print( out, "      %s = %s%d;\n", name, isMAType?"(TA_MAType)":"", (int)optInputParamInfo->defaultValue );
       print( out, "   else if( ((int)%s < %d) || ((int)%s > %d) )\n",
               name, minInt,
               name, maxInt );
@@ -4161,76 +3407,6 @@ static void appendToFunc( FILE *out )
    fprintf( out, "TA_RetCode TA_RestoreCandleDefaultSettings( TA_CandleSettingType settingType );\n" );
 }
 
-#ifdef _MSC_VER
-void genJavaCodePhase1( const TA_FuncInfo *funcInfo )
-{
-   fprintf( gOutJavaDefs_H->file, "#define TA_%s_Lookback %c%sLookback\n", funcInfo->name, tolower(funcInfo->camelCaseName[0]), &funcInfo->camelCaseName[1] );
-   fprintf( gOutJavaDefs_H->file, "#define TA_%s %c%s\n", funcInfo->name, tolower(funcInfo->camelCaseName[0]), &funcInfo->camelCaseName[1] );
-}
-
-void genJavaCodePhase2( const TA_FuncInfo *funcInfo )
-{
-   FILE *logicTmp;
-   char buffer[500];
-   int idx, again;
-   static int firstTime = 1;
-
-   if( firstTime == 1 )
-   {
-      /* Clean-up jus tin case. */
-      fileDelete( "..\\temp\\CoreJavaCode1.tmp" );
-      fileDelete( "..\\temp\\CoreJavaCode2.tmp" );
-      firstTime = 0;
-   }
-
-   init_gToOpen( "..\\temp\\CoreJavaCode1.tmp", NULL );
-   logicTmp = fopen( gToOpen, "w" );
-   if( !logicTmp )
-   {
-      printf( "Cannot open CoreJavaCode1.tmp\n" );
-      return;
-   }
-   fprintf( logicTmp, "#include \"ta_java_defs.h\"\n" );
-   fclose(logicTmp);
-   
-   sprintf( buffer, "..\\src\\tools\\gen_code\\mcpp -c -+ -z -P -I..\\src\\ta_common -I..\\src\\ta_abstract -I..\\include -D _JAVA ..\\src\\ta_func\\TA_%s.c >>..\\temp\\CoreJavaCode1.tmp ", funcInfo->name);
-   system( buffer );
-
-   sprintf( buffer, "..\\src\\tools\\gen_code\\mcpp -c -+ -z -P -I..\\src\\ta_common -I..\\src\\ta_abstract -I..\\include -D _JAVA ..\\temp\\CoreJavaCode1.tmp >..\\temp\\CoreJavaCode2.tmp " );
-   system( buffer );
-
-   /* Append the output of the C pre-processor to the Core.Java file. */
-   init_gToOpen( "..\\temp\\CoreJavaCode2.tmp", NULL );
-   logicTmp = fopen( gToOpen, "r" );
-   if( !logicTmp )
-   {
-      printf( "Cannot open CoreJavaCode2.tmp\n" );
-      return;
-   }
-   while( fgets(gTempBuf,BUFFER_SIZE,logicTmp) )
-   {
-      /* Remove empty lines and lines with only a ';' */
-      idx = 0;
-      again = 1;
-      while( again && gTempBuf[idx] != '\0' )
-      {
-         if( !isspace(gTempBuf[idx]) && !(gTempBuf[idx] == ';') )
-            again = 0;
-         idx++;
-      }
-      if( (again == 0) && (idx > 0) )
-         fputs( gTempBuf, gOutCore_Java->file );
-   }
-
-   /* Clean-up */
-   fclose(logicTmp);
-   print( gOutCore_Java->file, "\n" );   
-   fileDelete( "..\\temp\\CoreJavaCode1.tmp" );
-   fileDelete( "..\\temp\\CoreJavaCode2.tmp" );
-}
-#endif
-
-
 static int generateFuncAPI_C()
 {
    FileHandle *inFile;
@@ -4287,362 +3463,3 @@ static void convertFileToCArray( FILE *in, FILE *out )
    }
  
 }
-
-#ifdef _MSC_VER
-static void printJavaFunctionAnnotation(const TA_FuncInfo *funcInfo)
-{
-	TA_RetCode retCode;
-	TA_InputParameterInfo *inputInfo;
-	TA_OptInputParameterInfo *optInputInfo;
-	TA_OutputParameterInfo *outputInfo;
-    TA_RealRange *doubleRange;
-    TA_IntegerRange *integerRange;
-    TA_IntegerList *intList;
-	unsigned int i, j;
-    #define FUNCNAME_SIZE 100
-	char funcName[FUNCNAME_SIZE];
-	   
-    memset(funcName, 0, FUNCNAME_SIZE);
-    if( strlen(funcInfo->name) > (FUNCNAME_SIZE-1) )
-    {
-        printf( "\n*** Error buffer size exceeded (printJavaFunctionAnnotation)\n" );
-        strcpy( funcName, "1A2"); /* Substitute name. Will cause Java compilation to fail */
-    }
-    else
-    {	   
-	   if (funcInfo->camelCaseName==NULL) {
-	      strcpy(funcName, funcInfo->name);
-		  for (i=0; funcName[i]; i++) {
-			funcName[i] = tolower(funcName[i]);
-		  }
-	   } else {
-	     strcpy(funcName, funcInfo->camelCaseName);
-         funcName[0] = tolower(funcName[0]);
-	   }
-    }
-
-
-	/*
-	 * Generate Lookback method
-	 */
-    fprintf(gOutFunc_Annotation->file, "public int %sLookback(\n", funcName);
-	for(i=0; i<funcInfo->nbOptInput; i++)
-	{
-		retCode = TA_GetOptInputParameterInfo( funcInfo->handle, i, (void*)&optInputInfo );
-		if(optInputInfo->type == TA_OptInput_RealRange)
-		{
-			fprintf(gOutFunc_Annotation->file, "        double %s", optInputInfo->paramName);
-		}
-		else if(optInputInfo->type == TA_OptInput_IntegerRange)
-		{
-			fprintf(gOutFunc_Annotation->file, "        int %s", optInputInfo->paramName);
-		}
-		else if(optInputInfo->type == TA_OptInput_IntegerList)
-		{
-			fprintf(gOutFunc_Annotation->file, "        MAType %s", optInputInfo->paramName);
-		}
-		else
-		{
-			printf( "Unexpected error 1 (doForEachFunctionAnnotation)\n");
-		}
-		if (i<funcInfo->nbOptInput-1) fprintf(gOutFunc_Annotation->file, ",\n");
-	}
-    fprintf(gOutFunc_Annotation->file, ") {\n");
-    fprintf(gOutFunc_Annotation->file, "    return super.%sLookback(\n", funcName);
-	for(i=0; i<funcInfo->nbOptInput; i++)
-	{
-		retCode = TA_GetOptInputParameterInfo( funcInfo->handle, i, (void*)&optInputInfo );
-		fprintf(gOutFunc_Annotation->file, "        %s", optInputInfo->paramName);
-		if (i<funcInfo->nbOptInput-1) fprintf(gOutFunc_Annotation->file, ",\n");
-	}    
-    fprintf(gOutFunc_Annotation->file, "); }\n\n");
-
-	/*
-	 * Annotate Function
-	 */
-    fprintf(gOutFunc_Annotation->file, "@FuncInfo(\n");
-    fprintf(gOutFunc_Annotation->file, "        name  = \"%s\",\n", funcInfo->name);
-    fprintf(gOutFunc_Annotation->file, "        group = \"%s\",\n", funcInfo->group);
-    fprintf(gOutFunc_Annotation->file, "        flags = %d,\n", funcInfo->flags); /* TODO: should be like: FuncFlags.TA_FUNC_FLG_OVERLAP | FuncFlags.TA_FUNC_FLG_UNST_PER */
-    /*fprintf(gOutFunc_Annotation->file, "        hint     = \"%s\",\n", funcInfo->hint);*/
-    /*fprintf(gOutFunc_Annotation->file, "        helpFile = \"%s\",\n", funcInfo->helpFile);*/
-    fprintf(gOutFunc_Annotation->file, "        nbInput    = %d,\n", funcInfo->nbInput);
-    fprintf(gOutFunc_Annotation->file, "        nbOptInput = %d,\n", funcInfo->nbOptInput);
-    fprintf(gOutFunc_Annotation->file, "        nbOutput   = %d\n", funcInfo->nbOutput);
-    fprintf(gOutFunc_Annotation->file, ")\n");
-    fprintf(gOutFunc_Annotation->file, "public RetCode %s(\n", funcName);
-    
-    fprintf(gOutFunc_Annotation->file, "            int startIdx,\n");
-	fprintf(gOutFunc_Annotation->file, "            int endIdx,\n");
-    
-
-	/*
-	 * Anotate Input parameters
-	 */
-	for(i=0; i<funcInfo->nbInput; i++)
-	{
-		char idx = ' ';
-		/*if (funcInfo->nbInput>1) idx='0'+i;*/ /* TODO: compile Java code and see if it is necessary to distinguish parameters*/
-
-		retCode = TA_GetInputParameterInfo( funcInfo->handle, i, (void*)&inputInfo);
-		if(inputInfo->type == TA_Input_Price)
-		{
-			fprintf(gOutFunc_Annotation->file, "            @InputParameterInfo(\n");
-	        fprintf(gOutFunc_Annotation->file, "                paramName = \"%s\",\n", inputInfo->paramName);
-	        fprintf(gOutFunc_Annotation->file, "                flags     = %d,\n", inputInfo->flags);
-		    /*fprintf(gOutFunc_Annotation->file, "                hint     = \"%s\",\n", inputInfo->hint);*/
-		    /*fprintf(gOutFunc_Annotation->file, "                helpFile = \"%s\",\n", inputInfo->helpFile);*/
-	        fprintf(gOutFunc_Annotation->file, "                type = InputParameterType.TA_Input_Price\n");
-	        fprintf(gOutFunc_Annotation->file, "            )\n");
-
-			if(inputInfo->flags & TA_IN_PRICE_OPEN)
-			{
-				fprintf(gOutFunc_Annotation->file, "            double inOpen%c[],\n",idx);
-			}
-			if(inputInfo->flags & TA_IN_PRICE_HIGH)
-			{
-				fprintf(gOutFunc_Annotation->file, "            double inHigh%c[],\n",idx);
-			}
-			if(inputInfo->flags & TA_IN_PRICE_LOW)
-			{
-				fprintf(gOutFunc_Annotation->file, "            double inLow%c[],\n",idx);
-			}
-			if(inputInfo->flags & TA_IN_PRICE_CLOSE)
-			{
-				fprintf(gOutFunc_Annotation->file, "            double inClose%c[],\n",idx);
-			}
-			if(inputInfo->flags & TA_IN_PRICE_VOLUME)
-			{
-				fprintf(gOutFunc_Annotation->file, "            double inVolume%c[],\n",idx);
-			}
-			if(inputInfo->flags & TA_IN_PRICE_OPENINTEREST)
-			{
-				fprintf(gOutFunc_Annotation->file, "            double inOpenInterest%c[],\n",idx); /* FIXME: does it exist? */
-			}
-			if(inputInfo->flags & TA_IN_PRICE_TIMESTAMP)
-			{
-				fprintf(gOutFunc_Annotation->file, "            long inTimestamp%c[],\n",idx); /* FIXME: does it exist? */
-			}
-		}
-		else
-		{
-			if(inputInfo->type == TA_Input_Real)
-			{
-				fprintf(gOutFunc_Annotation->file, "            @InputParameterInfo(\n");
-		        fprintf(gOutFunc_Annotation->file, "                paramName = \"%s\",\n", inputInfo->paramName);
-		        fprintf(gOutFunc_Annotation->file, "                flags     = %d,\n", inputInfo->flags);
-		        fprintf(gOutFunc_Annotation->file, "                type = InputParameterType.TA_Input_Real\n");
-		        fprintf(gOutFunc_Annotation->file, "            )\n");
-				fprintf(gOutFunc_Annotation->file, "            double %s[],\n", inputInfo->paramName);
-			}
-			else if(inputInfo->type == TA_Input_Integer)
-			{
-				fprintf(gOutFunc_Annotation->file, "            @InputParameterInfo(\n");
-		        fprintf(gOutFunc_Annotation->file, "                paramName = \"%s\",\n", inputInfo->paramName);
-		        fprintf(gOutFunc_Annotation->file, "                flags     = %d,\n", inputInfo->flags);
-		        fprintf(gOutFunc_Annotation->file, "                type = InputParameterType.TA_Input_Integer\n");
-		        fprintf(gOutFunc_Annotation->file, "            )\n");
-				fprintf(gOutFunc_Annotation->file, "            int %s[],\n", inputInfo->paramName);
-			}
-			else
-			{
-			    printf( "Unexpected error 2(doForEachFunctionAnnotation)\n"); /*  FIXME: fatal error! */
-			}
-		}
-	}
-
-
-
-	/*
-	 * Annotate Optional input parameters
-	 */
-	for(i=0; i<funcInfo->nbOptInput; i++)
-	{
-		retCode = TA_GetOptInputParameterInfo( funcInfo->handle, i, (void*)&optInputInfo );
-		fprintf(gOutFunc_Annotation->file, "            @OptInputParameterInfo(\n");
-        fprintf(gOutFunc_Annotation->file, "                paramName    = \"%s\",\n", optInputInfo->paramName);
-		fprintf(gOutFunc_Annotation->file, "                displayName  = \"%s\",\n", optInputInfo->displayName);
-        fprintf(gOutFunc_Annotation->file, "                flags        = %d,\n", optInputInfo->flags);
-	    /*fprintf(gOutFunc_Annotation->file, "                hint     = \"%s\",\n", optInputInfo->hint);*/
-	    /*fprintf(gOutFunc_Annotation->file, "                helpFile = \"%s\",\n", optInputInfo->helpFile);*/
-		if(optInputInfo->type == TA_OptInput_RealRange)
-		{
-	        fprintf(gOutFunc_Annotation->file, "                type    = OptInputParameterType.TA_OptInput_RealRange,\n");
-	        fprintf(gOutFunc_Annotation->file, "                dataSet = com.tictactec.ta.lib.meta.annotation.RealRange.class\n");
-	        fprintf(gOutFunc_Annotation->file, "            )\n");			
-			doubleRange= (TA_RealRange*)optInputInfo->dataSet;
-			fprintf(gOutFunc_Annotation->file, "            @RealRange(\n");
-        	fprintf(gOutFunc_Annotation->file, "                    paramName    = \"%s\",\n", optInputInfo->paramName);
-		    fprintf(gOutFunc_Annotation->file, "                    defaultValue = %.5f,\n", (double)optInputInfo->defaultValue);
-			fprintf(gOutFunc_Annotation->file, "                    min          = %.5f,\n", doubleRange->min);
-			fprintf(gOutFunc_Annotation->file, "                    max          = %.5f,\n", doubleRange->max);
-			fprintf(gOutFunc_Annotation->file, "                    precision    = %d,\n", doubleRange->precision);
-			fprintf(gOutFunc_Annotation->file, "                    suggested_start     = %.5f,\n", doubleRange->suggested_start);
-			fprintf(gOutFunc_Annotation->file, "                    suggested_end       = %.5f,\n", doubleRange->suggested_end);
-			fprintf(gOutFunc_Annotation->file, "                    suggested_increment = %.5f\n",  doubleRange->suggested_increment);
-			fprintf(gOutFunc_Annotation->file, "            )\n");
-			fprintf(gOutFunc_Annotation->file, "            double %s,\n", optInputInfo->paramName);
-		}
-		else if(optInputInfo->type == TA_OptInput_IntegerRange)
-		{
-	        fprintf(gOutFunc_Annotation->file, "                type    = OptInputParameterType.TA_OptInput_IntegerRange,\n");
-	        fprintf(gOutFunc_Annotation->file, "                dataSet = com.tictactec.ta.lib.meta.annotation.IntegerRange.class\n");
-	        fprintf(gOutFunc_Annotation->file, "            )\n");			
-			integerRange= (TA_IntegerRange*)optInputInfo->dataSet;
-			fprintf(gOutFunc_Annotation->file, "            @IntegerRange(\n");
-        	fprintf(gOutFunc_Annotation->file, "                    paramName    = \"%s\",\n", optInputInfo->paramName);
-		    fprintf(gOutFunc_Annotation->file, "                    defaultValue = %d,\n", (int)optInputInfo->defaultValue);
-			fprintf(gOutFunc_Annotation->file, "                    min          = %d,\n", integerRange->min);
-			fprintf(gOutFunc_Annotation->file, "                    max          = %d,\n", integerRange->max);
-			fprintf(gOutFunc_Annotation->file, "                    suggested_start     = %d,\n", integerRange->suggested_start);
-			fprintf(gOutFunc_Annotation->file, "                    suggested_end       = %d,\n", integerRange->suggested_end);
-			fprintf(gOutFunc_Annotation->file, "                    suggested_increment = %d\n",  integerRange->suggested_increment);
-			fprintf(gOutFunc_Annotation->file, "            )\n");
-			fprintf(gOutFunc_Annotation->file, "            int %s,\n", optInputInfo->paramName);
-		}
-		else if(optInputInfo->type == TA_OptInput_IntegerList)
-		{
-	        fprintf(gOutFunc_Annotation->file, "                type    = OptInputParameterType.TA_OptInput_IntegerList,\n");
-	        fprintf(gOutFunc_Annotation->file, "                dataSet = com.tictactec.ta.lib.meta.annotation.IntegerList.class\n");
-	        fprintf(gOutFunc_Annotation->file, "            )\n");
-			intList = (TA_IntegerList*) optInputInfo->dataSet;
-			/*if( intList != (TA_IntegerList*) TA_DEF_UI_MA_Method.dataSet )
-			 *{
-			 *
-			 *}
-             */
-			fprintf(gOutFunc_Annotation->file, "            @IntegerList(\n");
-        	fprintf(gOutFunc_Annotation->file, "                    paramName    = \"%s\",\n", optInputInfo->paramName);
-		    fprintf(gOutFunc_Annotation->file, "                    defaultValue = %d,\n", (int)optInputInfo->defaultValue);
-
-			if (intList->nbElement>0) {
-				fprintf(gOutFunc_Annotation->file, "                    value  = { ");
-				for (j=0; j<intList->nbElement-1; j++) {
-					fprintf(gOutFunc_Annotation->file, "%d, ", intList->data[j].value);
-				}
-				fprintf(gOutFunc_Annotation->file, "%d },\n", intList->data[intList->nbElement-1].value);
-				fprintf(gOutFunc_Annotation->file, "                    string = { ");
-				for (j=0; j<intList->nbElement-1; j++) {
-					fprintf(gOutFunc_Annotation->file, "\"%s\", ", intList->data[j].string);
-				}
-				fprintf(gOutFunc_Annotation->file, "\"%s\" }\n", intList->data[intList->nbElement-1].string);
-			}
-			
-			fprintf(gOutFunc_Annotation->file, "            )\n");
-			fprintf(gOutFunc_Annotation->file, "            MAType %s,\n", optInputInfo->paramName);
-		}
-		else
-		{
-           printf( "Unexpected error 2(doForEachFunctionAnnotation)\n"); /*  FIXME: fatal error! */
-		}
-	}
-
-	fprintf(gOutFunc_Annotation->file, "            MInteger     outBegIdx,\n");
-	fprintf(gOutFunc_Annotation->file, "            MInteger     outNBElement,\n");
-
-
-	/*
-	 * Annotate Output parameters
-	 */
-	for(i=0; i<funcInfo->nbOutput; i++)
-	{
-		retCode = TA_GetOutputParameterInfo( funcInfo->handle, i, (void*)&outputInfo );
-		if(outputInfo->type == TA_Output_Integer)
-		{
-			fprintf(gOutFunc_Annotation->file, "            @OutputParameterInfo(\n");
-	        fprintf(gOutFunc_Annotation->file, "                paramName = \"%s\",\n", outputInfo->paramName);
-	        fprintf(gOutFunc_Annotation->file, "                flags     = %d,\n", outputInfo->flags);
-		    /*fprintf(gOutFunc_Annotation->file, "                hint     = \"%s\",\n", outputInfo->hint);*/
-		    /*fprintf(gOutFunc_Annotation->file, "                helpFile = \"%s\",\n", outputInfo->helpFile);*/
-	        fprintf(gOutFunc_Annotation->file, "                type = OutputParameterType.TA_Output_Integer\n");
-	        fprintf(gOutFunc_Annotation->file, "            )\n");
-			fprintf(gOutFunc_Annotation->file, "            int %s[]\n", outputInfo->paramName);
-		}
-		else if(outputInfo->type == TA_Output_Real)
-		{
-			fprintf(gOutFunc_Annotation->file, "            @OutputParameterInfo(\n");
-	        fprintf(gOutFunc_Annotation->file, "                paramName = \"%s\",\n", outputInfo->paramName);
-	        fprintf(gOutFunc_Annotation->file, "                flags     = %d,\n", outputInfo->flags);
-	        fprintf(gOutFunc_Annotation->file, "                type = OutputParameterType.TA_Output_Real\n");
-	        fprintf(gOutFunc_Annotation->file, "            )\n");
-			fprintf(gOutFunc_Annotation->file, "            double %s[]", outputInfo->paramName);
-		}
-		else
-		{
-				printf( "Unexpected error 3(doForEachFunctionAnnotation)\n"); /*  FIXME: fatal error!*/
-		}
-
-		if (i<funcInfo->nbOutput-1) {
-			fprintf(gOutFunc_Annotation->file, ",");
-		}
-		fprintf(gOutFunc_Annotation->file, "\n");
-
-	}
-
-    fprintf(gOutFunc_Annotation->file, ") {\n");
-    fprintf(gOutFunc_Annotation->file, "    return super.%s (\n", funcName);
-
-	fprintf(gOutFunc_Annotation->file, "        startIdx,\n");
-	fprintf(gOutFunc_Annotation->file, "        endIdx,\n");
-    
-	for(i=0; i<funcInfo->nbInput; i++)
-	{
-		retCode = TA_GetInputParameterInfo(funcInfo->handle, i, (void*)&inputInfo);
-		if(inputInfo->type == TA_Input_Price)
-		{
-			char idx = ' ';
-			/*if (funcInfo->nbInput>1) idx='0'+i;*/ /* TODO: compile Java code and see if it is necessary to distinguish parameters */
-		
-			if(inputInfo->flags & TA_IN_PRICE_OPEN)
-			{
-				fprintf(gOutFunc_Annotation->file, "        inOpen%c,\n", idx);
-			}
-			if(inputInfo->flags & TA_IN_PRICE_HIGH)
-			{
-				fprintf(gOutFunc_Annotation->file, "        inHigh%c,\n", idx);
-			}
-			if(inputInfo->flags & TA_IN_PRICE_LOW)
-			{
-				fprintf(gOutFunc_Annotation->file, "        inLow%c,\n", idx);
-			}
-			if(inputInfo->flags & TA_IN_PRICE_CLOSE)
-			{
-				fprintf(gOutFunc_Annotation->file, "        inClose%c,\n", idx);
-			}
-			if(inputInfo->flags & TA_IN_PRICE_VOLUME)
-			{
-				fprintf(gOutFunc_Annotation->file, "        inVolume%c,\n", idx);
-			}
-			if(inputInfo->flags & TA_IN_PRICE_OPENINTEREST)
-			{
-				fprintf(gOutFunc_Annotation->file, "        inOpenInterest%c,\n", idx); /*  FIXME: does it exist?*/
-			}
-			if(inputInfo->flags & TA_IN_PRICE_TIMESTAMP)
-			{
-				fprintf(gOutFunc_Annotation->file, "        inTimestamp%c,\n", idx); /* FIXME: does it exist? */
-			}
-		} else {
-			fprintf(gOutFunc_Annotation->file, "        %s,\n", inputInfo->paramName);
-		}
-	}
-	
-	for(i=0; i<funcInfo->nbOptInput; i++)
-	{
-		retCode = TA_GetOptInputParameterInfo(funcInfo->handle, i, (void*)&optInputInfo);
-        fprintf(gOutFunc_Annotation->file, "        %s,\n", optInputInfo->paramName);
-	}
-
-	fprintf(gOutFunc_Annotation->file, "        outBegIdx,\n");
-	fprintf(gOutFunc_Annotation->file, "        outNBElement,\n");
-
-	for(i=0; i<funcInfo->nbOutput-1; i++)
-	{
-		retCode = TA_GetOutputParameterInfo(funcInfo->handle, i, (void*)&outputInfo);
-        fprintf(gOutFunc_Annotation->file, "        %s,\n", outputInfo->paramName);
-	}
-	retCode = TA_GetOutputParameterInfo(funcInfo->handle, funcInfo->nbOutput-1, (void*)&outputInfo);
-    fprintf(gOutFunc_Annotation->file, "        %s\n", outputInfo->paramName);
-
-    fprintf(gOutFunc_Annotation->file, "); }\n\n\n");
-}
-#endif
