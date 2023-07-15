@@ -51,7 +51,7 @@
  */
 
 /**** Headers ****/
-#ifdef WIN32
+#ifdef _WIN32
    #include "windows.h"
 #endif
 
@@ -1284,7 +1284,7 @@ static TA_RetCode CallTestFunction( RangeTestFunction testFunction,
    TA_RetCode retCode;
    double clockDelta;
 
-#ifdef WIN32
+#ifdef _WIN32
    LARGE_INTEGER startClock;
    LARGE_INTEGER endClock;
 #else
@@ -1292,7 +1292,7 @@ static TA_RetCode CallTestFunction( RangeTestFunction testFunction,
    clock_t endClock;
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
    QueryPerformanceCounter(&startClock);
 #else
    startClock = clock();
@@ -1314,7 +1314,7 @@ static TA_RetCode CallTestFunction( RangeTestFunction testFunction,
 		return retCode;
 	}
 
-#ifdef WIN32
+#ifdef _WIN32
    QueryPerformanceCounter(&endClock);
    clockDelta = (double)((__int64)endClock.QuadPart - (__int64) startClock.QuadPart);
 #else

@@ -54,7 +54,7 @@
  */
 
 /**** Headers ****/
-#ifdef WIN32
+#ifdef _WIN32
    #include "windows.h"
 #endif
 
@@ -94,7 +94,7 @@ static void printUsage(void);
 /**** Global functions definitions.   ****/
 int main( int argc, char **argv )
 {
-#ifdef WIN32
+#ifdef _WIN32
 	LARGE_INTEGER QPFrequency;
 #endif
    double freq;
@@ -167,7 +167,7 @@ int main( int argc, char **argv )
       {
          printf( "\nNumber profiled function call       = %d function calls", nbProfiledCall );	  
 
-#ifdef WIN32
+#ifdef _WIN32
          QueryPerformanceFrequency(&QPFrequency);
          freq = (double)QPFrequency.QuadPart;
          printf( "\nTotal execution time                = %g milliseconds", (timeInProfiledCall/freq)*1000.0 );

@@ -46,7 +46,11 @@
     <ClCompile Include="..\..\..\src\tools\ta_regtest\test_util.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\ta_common.h" />
+    <ClInclude Include="..\..\..\include\ta_defs.h" />
     <ClInclude Include="..\..\..\include\ta_libc.h" />
+    <ClInclude Include="..\..\..\src\ta_common\ta_memory.h" />
+    <ClInclude Include="..\..\..\src\ta_func\ta_utility.h" />
     <ClInclude Include="..\..\..\src\tools\ta_regtest\ta_error_number.h" />
     <ClInclude Include="..\..\..\src\tools\ta_regtest\ta_test_func.h" />
     <ClInclude Include="..\..\..\src\tools\ta_regtest\ta_test_priv.h" />

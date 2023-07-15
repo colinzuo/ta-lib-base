@@ -59,7 +59,7 @@
  */
 
 /**** Headers ****/
-#ifdef WIN32
+#ifdef _WIN32
    #include "windows.h"
 #else
    #include "time.h"
@@ -575,7 +575,7 @@ static ErrorNumber callAndProfile( const char *funcName, ProfilingType type )
    int inputSize;
 
    /* Variables measuring the execution time */
-#ifdef WIN32
+#ifdef _WIN32
    LARGE_INTEGER startClock;
    LARGE_INTEGER endClock;
 #else
@@ -702,7 +702,7 @@ static ErrorNumber callAndProfile( const char *funcName, ProfilingType type )
 			  }
 		   }
 
-           #ifdef WIN32
+           #ifdef _WIN32
               QueryPerformanceCounter(&startClock);
            #else
               startClock = clock();
@@ -717,7 +717,7 @@ static ErrorNumber callAndProfile( const char *funcName, ProfilingType type )
 		      return TA_ABS_TST_FAIL_CALLFUNC_1;
 		   }
 
-		   #ifdef WIN32
+		   #ifdef _WIN32
 			   QueryPerformanceCounter(&endClock);
 			   clockDelta = (double)((__int64)endClock.QuadPart - (__int64) startClock.QuadPart);
 		   #else

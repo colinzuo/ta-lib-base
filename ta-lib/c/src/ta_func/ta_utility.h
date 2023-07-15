@@ -7,27 +7,18 @@
 #ifndef TA_UTILITY_H
 #define TA_UTILITY_H
 
-#if !defined( _MANAGED ) && !defined( _JAVA )
-   #ifndef TA_FUNC_H
-      #include "ta_func.h"
-   #endif
-
-   #ifndef TA_GLOBAL_H
-      #include "ta_global.h"
-   #endif
+#ifndef TA_FUNC_H
+    #include "ta_func.h"
 #endif
 
-#if defined( _MANAGED )
-   #ifndef NULL
-      #define NULL 0
-   #endif
+#ifndef TA_GLOBAL_H
+    #include "ta_global.h"
 #endif
 
 /* Calculate a Simple Moving Average.
  * This is an internal version, parameter are assumed validated.
  * (startIdx and endIdx cannot be -1).
  */
-#if !defined( _MANAGED ) && !defined( _JAVA )
 TA_RetCode TA_INT_SMA( int           startIdx,
                        int           endIdx,
                        const double *inReal,
@@ -43,13 +34,11 @@ TA_RetCode TA_S_INT_SMA( int          startIdx,
                          int         *outBegIdx,
                          int         *outNBElement,
                          double      *outReal );
-#endif
 
 /* Calculate an Exponential Moving Average.
  * This is an internal version, parameter are assumed validated.
  * (startIdx and endIdx cannot be -1).
  */
-#if !defined( _MANAGED ) && !defined( _JAVA )
 TA_RetCode TA_INT_EMA( int           startIdx,
                        int           endIdx,
                        const double *inReal,
@@ -67,13 +56,11 @@ TA_RetCode TA_S_INT_EMA( int          startIdx,
                          int         *outBegIdx,
                          int         *outNBElement,
                          double      *outReal );
-#endif
 
 /* Calculate a MACD
  * This is an internal version, parameter are assumed validated.
  * (startIdx and endIdx cannot be -1).
  */
-#if !defined( _MANAGED ) && !defined( _JAVA )
 TA_RetCode TA_INT_MACD( int           startIdx,
                         int           endIdx,
                         const double  inReal[],
@@ -97,14 +84,12 @@ TA_RetCode TA_S_INT_MACD( int          startIdx,
                           double       outRealMACD_0[],
                           double       outRealMACDSignal_1[],
                           double       outRealMACDHist_2[] );
-#endif
 
 /* Internal Price Oscillator function.
  *
  * A buffer must be provided for intermediate processing
  * 'tempBuffer' must be of at least (endIdx-startIdx+1)
  */
-#if !defined( _MANAGED ) && !defined( _JAVA )
 TA_RetCode TA_INT_PO( int           startIdx,
                       int           endIdx,
                       const double *inReal,
@@ -128,10 +113,8 @@ TA_RetCode TA_S_INT_PO( int           startIdx,
                         double       *outReal,
                         double       *tempBuffer,
                         int  doPercentageOutput );
-#endif
 
 /* Internal variance function. */
-#if !defined( _MANAGED ) && !defined( _JAVA )
 TA_RetCode TA_INT_VAR( int           startIdx,
                        int           endIdx,
                        const double *inReal,
@@ -147,14 +130,12 @@ TA_RetCode TA_S_INT_VAR( int           startIdx,
                          int          *outBegIdx,
                          int          *outNBElement,
                          double       *outReal );
-#endif
 
 /* A function to calculate a standard deviation.
  *
  * This function allows speed optimization when the
  * moving average series is already calculated.
  */
-#if !defined( _MANAGED ) && !defined( _JAVA )
 void TA_INT_stddev_using_precalc_ma( const double *inReal,
                                      const double *inMovAvg,
                                      int           inMovAvgBegIdx,
@@ -168,61 +149,24 @@ void TA_S_INT_stddev_using_precalc_ma( const float  *inReal,
                                        int           inMovAvgNbElement,
                                        int           timePeriod,
                                        double       *output );
-#endif
 
-   /* Provides an equivalent to standard "math.h" functions. */
-#if defined( _MANAGED )
-   #define std_floor Math::Floor
-   #define std_ceil  Math::Ceiling
-   #define std_fabs  Math::Abs
-   #define std_atan  Math::Atan
-   #define std_cos   Math::Cos
-   #define std_sin   Math::Sin
-   #define std_sqrt  Math::Sqrt
-   #define std_tanh  Math::Tanh
-   #define std_tan   Math::Tan
-   #define std_sinh  Math::Sinh
-   #define std_log10 Math::Log10
-   #define std_log   Math::Log
-   #define std_exp   Math::Exp
-   #define std_cosh  Math::Cosh   
-   #define std_asin  Math::Asin
-   #define std_acos  Math::Acos
-#elif defined( _JAVA )
-   #define std_floor Math.floor
-   #define std_ceil  Math.ceil
-   #define std_fabs  Math.abs
-   #define std_atan  Math.atan
-   #define std_cos   Math.cos
-   #define std_sin   Math.sin
-   #define std_sqrt  Math.sqrt
-   #define std_tanh  Math.tanh
-   #define std_tan   Math.tan
-   #define std_sinh  Math.sinh
-   #define std_log10 Math.log10
-   #define std_log   Math.log
-   #define std_exp   Math.exp
-   #define std_cosh  Math.cosh   
-   #define std_asin  Math.asin
-   #define std_acos  Math.acos
-#else
-   #define std_floor floor
-   #define std_ceil  ceil
-   #define std_fabs  fabs
-   #define std_atan  atan
-   #define std_cos   cos
-   #define std_sin   sin
-   #define std_sqrt  sqrt
-   #define std_tanh  tanh
-   #define std_tan   tan
-   #define std_sinh  sinh
-   #define std_log10 log10
-   #define std_log   log
-   #define std_exp   exp
-   #define std_cosh  cosh   
-   #define std_asin  asin
-   #define std_acos  acos
-#endif
+/* Provides an equivalent to standard "math.h" functions. */
+#define std_floor floor
+#define std_ceil  ceil
+#define std_fabs  fabs
+#define std_atan  atan
+#define std_cos   cos
+#define std_sin   sin
+#define std_sqrt  sqrt
+#define std_tanh  tanh
+#define std_tan   tan
+#define std_sinh  sinh
+#define std_log10 log10
+#define std_log   log
+#define std_exp   exp
+#define std_cosh  cosh   
+#define std_asin  asin
+#define std_acos  acos
 
 /* Rounding macro for doubles. Works only with positive numbers. */
 #define round_pos(x) (std_floor((x)+0.5))
@@ -329,19 +273,9 @@ void TA_S_INT_stddev_using_precalc_ma( const float  *inReal,
 #define TA_HIGHLOWRANGE(IDX)    ( inHigh[IDX] - inLow[IDX] )
 #define TA_CANDLECOLOR(IDX)     ( inClose[IDX] >= inOpen[IDX] ? 1 : -1 )
 
-#if defined( _MANAGED )
-   #define TA_CANDLERANGETYPE(SET) (Globals->candleSettings[(int)CandleSettingType::SET]->rangeType)
-   #define TA_CANDLEAVGPERIOD(SET) (Globals->candleSettings[(int)CandleSettingType::SET]->avgPeriod)
-   #define TA_CANDLEFACTOR(SET)    (Globals->candleSettings[(int)CandleSettingType::SET]->factor)
-#elif defined( _JAVA )
-   #define TA_CANDLERANGETYPE(SET) (this.candleSettings[CandleSettingType.SET.ordinal()].rangeType)
-   #define TA_CANDLEAVGPERIOD(SET) (this.candleSettings[CandleSettingType.SET.ordinal()].avgPeriod)
-   #define TA_CANDLEFACTOR(SET)    (this.candleSettings[CandleSettingType.SET.ordinal()].factor)
-#else
-   #define TA_CANDLERANGETYPE(SET) (TA_Globals->candleSettings[TA_##SET].rangeType)
-   #define TA_CANDLEAVGPERIOD(SET) (TA_Globals->candleSettings[TA_##SET].avgPeriod)
-   #define TA_CANDLEFACTOR(SET)    (TA_Globals->candleSettings[TA_##SET].factor)
-#endif
+#define TA_CANDLERANGETYPE(SET) (TA_Globals->candleSettings[TA_##SET].rangeType)
+#define TA_CANDLEAVGPERIOD(SET) (TA_Globals->candleSettings[TA_##SET].avgPeriod)
+#define TA_CANDLEFACTOR(SET)    (TA_Globals->candleSettings[TA_##SET].factor)
 
 #define TA_CANDLERANGE(SET,IDX) \
     ( TA_CANDLERANGETYPE(SET) == ENUM_VALUE(RangeType,TA_RangeType_RealBody,RealBody) ? TA_REALBODY(IDX) : \
@@ -357,9 +291,5 @@ void TA_S_INT_stddev_using_precalc_ma( const float  *inReal,
 #define TA_REALBODYGAPDOWN(IDX2,IDX1)   ( max(inOpen[IDX2],inClose[IDX2]) < min(inOpen[IDX1],inClose[IDX1]) )
 #define TA_CANDLEGAPUP(IDX2,IDX1)       ( inLow[IDX2] > inHigh[IDX1] )
 #define TA_CANDLEGAPDOWN(IDX2,IDX1)     ( inHigh[IDX2] < inLow[IDX1] )
-
-#ifdef TA_LIB_PRO
-/* Section for code distributed with TA-Lib Pro only. */
-#endif
 
 #endif
