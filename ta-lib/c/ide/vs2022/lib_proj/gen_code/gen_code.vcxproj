@@ -336,8 +336,12 @@
     <ClCompile Include="..\..\..\..\src\tools\gen_code\gen_code.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\ta_abstract.h" />
     <ClInclude Include="..\..\..\..\include\ta_common.h" />
+    <ClInclude Include="..\..\..\..\include\ta_defs.h" />
     <ClInclude Include="..\..\..\..\src\ta_abstract\ta_def_ui.h" />
+    <ClInclude Include="..\..\..\..\src\ta_abstract\ta_frame_priv.h" />
+    <ClInclude Include="..\..\..\..\src\ta_common\ta_memory.h" />
     <ClInclude Include="..\..\..\..\src\ta_common\ta_pragma.h" />
   </ItemGroup>
   <ItemGroup>

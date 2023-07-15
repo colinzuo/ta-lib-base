@@ -335,6 +335,7 @@ static ErrorNumber do_test( const TA_History *history,
                         gBuffer[0].out0 );
       break;
    default:
+      outBegIdx = outNbElement = 0;
       retCode = TA_INTERNAL_ERROR(178);
    }
 
@@ -398,6 +399,7 @@ static ErrorNumber do_test( const TA_History *history,
       retCode = TA_GetFuncHandle( "CMO", &funcHandle );
       break;
    default:
+      funcHandle = 0;
       retCode = TA_INTERNAL_ERROR(180);
    }
 

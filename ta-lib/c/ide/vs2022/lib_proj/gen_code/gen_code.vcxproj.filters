@@ -112,13 +112,25 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\ta_abstract\ta_def_ui.h">
-      <Filter>src\ta_abstract</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\ta_common.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\ta_common\ta_pragma.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\ta_abstract.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\ta_common\ta_memory.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\ta_abstract\ta_frame_priv.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\ta_abstract\ta_def_ui.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\ta_defs.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
