@@ -29,22 +29,10 @@
     <ClInclude Include="..\..\src\ta_common\ta_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\ta_common\ta_magic_nb.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ta_common\ta_memory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ta_common\ta_pragma.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\ta_common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\ta_defs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\ta_func.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

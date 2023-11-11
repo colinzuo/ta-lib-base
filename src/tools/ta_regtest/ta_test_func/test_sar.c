@@ -1,35 +1,4 @@
-/* TA-LIB Copyright (c) 1999-2007, Mario Fortier
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or
- * without modification, are permitted provided that the following
- * conditions are met:
- *
- * - Redistributions of source code must retain the above copyright
- *   notice, this list of conditions and the following disclaimer.
- *
- * - Redistributions in binary form must reproduce the above copyright
- *   notice, this list of conditions and the following disclaimer in
- *   the documentation and/or other materials provided with the
- *   distribution.
- *
- * - Neither name of author nor the names of its contributors
- *   may be used to endorse or promote products derived from this
- *   software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+
 
 /* List of contributors:
  *
@@ -71,26 +40,26 @@
 /**** Local declarations.              ****/
 typedef struct
 {
-   TA_Integer useWilderData;
-   TA_Integer startIdx;
-   TA_Integer endIdx;
+   int useWilderData;
+   int startIdx;
+   int endIdx;
 
-   TA_Real optInAcceleration;
-   TA_Real optInMaximum;
+   double optInAcceleration;
+   double optInMaximum;
 
    TA_RetCode expectedRetCode;
 
-   TA_Integer oneOfTheExpectedOutRealIndex0;
-   TA_Real    oneOfTheExpectedOutReal0;
+   int oneOfTheExpectedOutRealIndex0;
+   double    oneOfTheExpectedOutReal0;
 
-   TA_Integer expectedBegIdx;
-   TA_Integer expectedNbElement;
+   int expectedBegIdx;
+   int expectedNbElement;
 } TA_Test;
 
 typedef struct
 {
    const TA_Test *test;
-   const TA_Real *close;
+   const double *close;
 } TA_RangeTestParam;
 
 /**** Local functions declarations.    ****/
@@ -99,7 +68,7 @@ static ErrorNumber do_test( const TA_History *history,
 
 /**** Local variables definitions.     ****/
 
-static TA_Real wilderHigh[] =
+static double wilderHigh[] =
 {
 51.12,
 52.35,52.1,51.8,52.1,52.5,52.8,52.5,53.5,53.5,53.8,54.2,53.4,53.5,
@@ -107,7 +76,7 @@ static TA_Real wilderHigh[] =
 56.70,56.00,56.20,54.80,55.50,54.70,54.00,52.50,51.00,51.50,51.70,53.00
 };
 
-static TA_Real wilderLow[] =
+static double wilderLow[] =
 {
 50.0,
 51.5,51,50.5,51.25,51.7,51.85,51.5,52.3,52.5,53,53.5,52.5,52.1,53,
@@ -115,7 +84,7 @@ static TA_Real wilderLow[] =
 55.50,55.00,54.90,54.00,54.50,53.80,53.00,51.50,50.00,50.50,50.20,51.50
 };
 
-#define WILDER_NB_BAR (sizeof(wilderLow)/sizeof(TA_Real))
+#define WILDER_NB_BAR (sizeof(wilderLow)/sizeof(double))
 
 static TA_Test tableTest[] =
 {
@@ -174,12 +143,12 @@ static ErrorNumber do_test( const TA_History *history,
 {
    TA_RetCode retCode;
    ErrorNumber errNb;
-   TA_Integer outBegIdx;
-   TA_Integer outNbElement;
+   int outBegIdx;
+   int outNbElement;
 
-   const TA_Real *highPtr;
-   const TA_Real *lowPtr;
-   TA_Integer nbPriceBar;
+   const double *highPtr;
+   const double *lowPtr;
+   int nbPriceBar;
 
    /* Set to NAN all the elements of the gBuffers.  */
    clearAllBuffers();

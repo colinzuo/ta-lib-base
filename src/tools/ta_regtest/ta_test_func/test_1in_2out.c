@@ -1,35 +1,4 @@
-/* TA-LIB Copyright (c) 1999-2007, Mario Fortier
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or
- * without modification, are permitted provided that the following
- * conditions are met:
- *
- * - Redistributions of source code must retain the above copyright
- *   notice, this list of conditions and the following disclaimer.
- *
- * - Redistributions in binary form must reproduce the above copyright
- *   notice, this list of conditions and the following disclaimer in
- *   the documentation and/or other materials provided with the
- *   distribution.
- *
- * - Neither name of author nor the names of its contributors
- *   may be used to endorse or promote products derived from this
- *   software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+
 
 /* List of contributors:
  *
@@ -80,30 +49,30 @@ typedef enum {
 
 typedef struct
 {
-   TA_Integer  doRangeTestFlag;
+   int  doRangeTestFlag;
 
    TA_TestId   theFunction;
-   TA_Integer  unstablePeriod;
+   int  unstablePeriod;
 
-   TA_Integer startIdx;
-   TA_Integer endIdx;
+   int startIdx;
+   int endIdx;
    
    TA_RetCode expectedRetCode;
 
-   TA_Integer oneOfTheExpectedOutRealIndex0;
-   TA_Real    oneOfTheExpectedOutReal0;
+   int oneOfTheExpectedOutRealIndex0;
+   double    oneOfTheExpectedOutReal0;
 
-   TA_Integer oneOfTheExpectedOutRealIndex1;
-   TA_Real    oneOfTheExpectedOutReal1;
+   int oneOfTheExpectedOutRealIndex1;
+   double    oneOfTheExpectedOutReal1;
 
-   TA_Integer expectedBegIdx;
-   TA_Integer expectedNbElement;
+   int expectedBegIdx;
+   int expectedNbElement;
 } TA_Test;
 
 typedef struct
 {
    const TA_Test *test;
-   const TA_Real *price;
+   const double *price;
 } TA_RangeTestParam;
 
 /**** Local functions declarations.    ****/
@@ -200,22 +169,22 @@ ErrorNumber test_func_1in_2out( TA_History *history )
 }
 
 /**** Local functions definitions.     ****/
-static TA_RetCode rangeTestFunction( TA_Integer    startIdx,
-                                     TA_Integer    endIdx,
-                                     TA_Real      *outputBuffer,
-                                     TA_Integer   *outputBufferInt,
-                                     TA_Integer   *outBegIdx,
-                                     TA_Integer   *outNbElement,
-                                     TA_Integer   *lookback,
+static TA_RetCode rangeTestFunction( int    startIdx,
+                                     int    endIdx,
+                                     double      *outputBuffer,
+                                     int   *outputBufferInt,
+                                     int   *outBegIdx,
+                                     int   *outNbElement,
+                                     int   *lookback,
                                      void         *opaqueData,
                                      unsigned int  outputNb,
                                      unsigned int *isOutputInteger )
 {
    TA_RetCode retCode;
    TA_RangeTestParam *testParam;
-   TA_Real *out1;
-   TA_Real *out2;
-   TA_Real *dummyOutput;
+   double *out1;
+   double *out2;
+   double *dummyOutput;
    
    (void)outputBufferInt;
 
@@ -223,7 +192,7 @@ static TA_RetCode rangeTestFunction( TA_Integer    startIdx,
   
    testParam = (TA_RangeTestParam *)opaqueData;   
 
-   dummyOutput = TA_Malloc( (endIdx-startIdx+1) * sizeof(TA_Real) );
+   dummyOutput = TA_Malloc( (endIdx-startIdx+1) * sizeof(double) );
                      
    if( outputNb == 0 )
    {
@@ -269,10 +238,10 @@ static ErrorNumber do_test( const TA_History *history,
 {
    TA_RetCode retCode;
    ErrorNumber errNb;
-   TA_Integer outBegIdx;
-   TA_Integer outNbElement;
+   int outBegIdx;
+   int outNbElement;
    TA_RangeTestParam testParam;
-   const TA_Real *referenceInput;
+   const double *referenceInput;
 
    /* Set to NAN all the elements of the gBuffers.  */
    clearAllBuffers();

@@ -175,7 +175,6 @@
     <ClCompile Include="..\..\src\ta_func\ta_TSF.c" />
     <ClCompile Include="..\..\src\ta_func\ta_TYPPRICE.c" />
     <ClCompile Include="..\..\src\ta_func\ta_ULTOSC.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_utility.c" />
     <ClCompile Include="..\..\src\ta_func\ta_VAR.c" />
     <ClCompile Include="..\..\src\ta_func\ta_WCLPRICE.c" />
     <ClCompile Include="..\..\src\ta_func\ta_WILLR.c" />

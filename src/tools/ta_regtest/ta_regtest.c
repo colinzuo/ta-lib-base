@@ -1,58 +1,3 @@
-/* TA-LIB Copyright (c) 1999-2007, Mario Fortier
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or
- * without modification, are permitted provided that the following
- * conditions are met:
- *
- * - Redistributions of source code must retain the above copyright
- *   notice, this list of conditions and the following disclaimer.
- *
- * - Redistributions in binary form must reproduce the above copyright
- *   notice, this list of conditions and the following disclaimer in
- *   the documentation and/or other materials provided with the
- *   distribution.
- *
- * - Neither name of author nor the names of its contributors
- *   may be used to endorse or promote products derived from this
- *   software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/* List of contributors:
- *
- *  Initial  Name/description
- *  -------------------------------------------------------------------
- *  MF       Mario Fortier
- *  AC       Angelo Ciceri
- *
- *
- * Change history:
- *
- *  MMDDYY BY   Description
- *  -------------------------------------------------------------------
- *  063001 MF   First version (initial framework only).
- *  090404 MF   Add test_candlestick
- *  110206 AC   Change volume and open interest to double
- *  122506 MF   Add MININDEX,MAXINDEX,MINMAX and MINMAXINDEX.
- */
-
-/* Description:
- *    Perform regression testing of the TA-LIB.
- */
-
 /**** Headers ****/
 #ifdef _WIN32
    #include "windows.h"
@@ -67,12 +12,6 @@
 #include "ta_test_func.h"
 #include "ta_utility.h"
 
-/**** External functions declarations. ****/
-/* None */
-
-/**** External variables declarations. ****/
-/* None */
-
 /**** Global variables definitions.    ****/
 int nbProfiledCall;
 double timeInProfiledCall;
@@ -80,16 +19,10 @@ double worstProfiledCall;
 int insufficientClockPrecision;
 int doExtensiveProfiling;
 
-/**** Local declarations.              ****/
-/* None */
-
 /**** Local functions declarations.    ****/
 static ErrorNumber testTAFunction_ALL( void );
 static ErrorNumber test_with_simulator( void );
 static void printUsage(void);
-
-/**** Local variables definitions.     ****/
-/* None */
 
 /**** Global functions definitions.   ****/
 int main( int argc, char **argv )
@@ -113,10 +46,10 @@ int main( int argc, char **argv )
    printf( "ta_regtest V%s - Regression Tests of TA-Lib code\n", TA_GetVersionString() );
    printf( "\n" );
 
-   if( argc == 2 )
+   if ( argc == 2 )
    {
 	   /* Detect option to perform extended profiling. */
-	   if( (argv[1][0] == '-') && (argv[1][1] == 'p') && (argv[1][2] == '\0'))
+	   if ( (argv[1][0] == '-') && (argv[1][1] == 'p') && (argv[1][2] == '\0'))
 	   {
 		   doExtensiveProfiling = 1;
 	   }
@@ -127,7 +60,7 @@ int main( int argc, char **argv )
 	   }
    }
 
-   if( argc > 2 )
+   if ( argc > 2 )
    {
       printUsage();
       return TA_REGTEST_BAD_USER_PARAM;
@@ -138,32 +71,24 @@ int main( int argc, char **argv )
 
    /* Test utility like List/Stack/Dictionary/Memory Allocation etc... */
    retValue = test_internals();
-   if( retValue != TA_TEST_PASS )
+   if ( retValue != TA_TEST_PASS )
    {
       printf( "\nFailed an internal test with code=%d\n", retValue );
       return retValue;
    }
 
-   /* Test abstract interface. */
-   retValue = test_abstract();
-   if( retValue != TA_TEST_PASS )
-   {
-      printf( "Failed: Abstract interface Tests (error number = %d)\n", retValue );
-      return retValue;
-   }
-
    /* Perform all regresstions tests (except when ta_regtest is executed for profiling only). */
-   if( !doExtensiveProfiling )
+   if ( !doExtensiveProfiling )
    {
       retValue = test_with_simulator();
-      if( retValue != TA_TEST_PASS )
+      if ( retValue != TA_TEST_PASS )
          return retValue;
 
-      if( insufficientClockPrecision != 0 )
+      if ( insufficientClockPrecision != 0 )
       {
    	   printf( "\nWarning: Code profiling not supported for this platform.\n" );
       }
-      else if( nbProfiledCall > 0 )
+      else if ( nbProfiledCall > 0 )
       {
          printf( "\nNumber profiled function call       = %d function calls", nbProfiledCall );	  
 
@@ -194,12 +119,12 @@ static ErrorNumber test_with_simulator( void )
 
    /* Initialize the library. */
    retValue = allocLib();
-   if( retValue != TA_TEST_PASS )
+   if ( retValue != TA_TEST_PASS )
       return retValue;
 
    /* Perform testing of each of the TA Functions. */
    retValue = testTAFunction_ALL();
-   if( retValue != TA_TEST_PASS )
+   if ( retValue != TA_TEST_PASS )
    {
       return retValue;
    }
@@ -207,17 +132,17 @@ static ErrorNumber test_with_simulator( void )
    /* Clean-up and exit. */
 
    retValue = freeLib( );
-   if( retValue != TA_TEST_PASS )
+   if ( retValue != TA_TEST_PASS )
       return retValue;
 
    return TA_TEST_PASS; /* All test succeed. */
 }
 
-extern TA_Real      TA_SREF_open_daily_ref_0_PRIV[];
-extern TA_Real      TA_SREF_high_daily_ref_0_PRIV[];
-extern TA_Real      TA_SREF_low_daily_ref_0_PRIV[];
-extern TA_Real      TA_SREF_close_daily_ref_0_PRIV[];
-extern TA_Real      TA_SREF_volume_daily_ref_0_PRIV[];
+extern double      TA_SREF_open_daily_ref_0_PRIV[];
+extern double      TA_SREF_high_daily_ref_0_PRIV[];
+extern double      TA_SREF_low_daily_ref_0_PRIV[];
+extern double      TA_SREF_close_daily_ref_0_PRIV[];
+extern double      TA_SREF_volume_daily_ref_0_PRIV[];
 
 static ErrorNumber testTAFunction_ALL( void )
 {
@@ -243,7 +168,7 @@ static ErrorNumber testTAFunction_ALL( void )
       showFeedback(); \
       TA_SetCompatibility( TA_COMPATIBILITY_DEFAULT ); \
       retValue = func( &history ); \
-      if( retValue != TA_TEST_PASS ) \
+      if ( retValue != TA_TEST_PASS ) \
          return retValue; \
       hideFeedback(); \
       printf( "done.\n" ); \
@@ -254,7 +179,6 @@ static ErrorNumber testTAFunction_ALL( void )
    DO_TEST( test_func_per_hl,   "AROON,CORREL,BETA" );
    DO_TEST( test_func_per_hlc,  "CCI,WILLR,ULTOSC,NATR" );
    DO_TEST( test_func_per_ohlc, "BOP,AVGPRICE" );
-   DO_TEST( test_func_rsi,      "RSI,CMO" );
    DO_TEST( test_func_minmax,   "MIN,MAX,MININDEX,MAXINDEX,MINMAX,MINMAXINDEX" );
    DO_TEST( test_func_po,       "PO,APO" );
    DO_TEST( test_func_adx,      "ADX,ADXR,DI,DM,DX" );
@@ -268,7 +192,6 @@ static ErrorNumber testTAFunction_ALL( void )
    DO_TEST( test_func_trange,   "TRANGE,ATR" );
    DO_TEST( test_func_stddev,   "STDDEV,VAR" );
    DO_TEST( test_func_bbands,   "BBANDS" );
-   DO_TEST( test_candlestick,   "All Candlesticks" );
 
    return TA_TEST_PASS; /* All tests succeeded. */
 }

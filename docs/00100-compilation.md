@@ -25,8 +25,6 @@ MSB8012: $(TargetName) ('gen_code') does not match the Linker's OutputFile prope
 
 MSB8012: $(TargetPath) ('C:\work3\repos\myself\ta-lib-base\ta-lib\c\bin\gen_code.exe') does not match the Linker's OutputFile property value '.\..\..\..\..\bin\gen_code_cmr.exe' ('C:\work3\repos\myself\ta-lib-base\ta-lib\bin\gen_code_cmr.exe') in project configuration 'cmr|Win32'. This may cause your project to build incorrectly. To correct this, please make sure that $(TargetPath) property value matches the value specified in %(Link.OutputFile).
 
-MSB8012: $(TargetName) ('ta_abstract') does not match the Librarian's OutputFile property value '.\..\..\..\..\lib/ta_abstract_cmr.lib' ('ta_abstract_cmr') in project configuration 'cmr|Win32'. This may cause your project to build incorrectly. To correct this, please make sure that $(TargetName) property value matches the value specified in %(Lib.OutputFile).
-
 ### 和default project的配置区别
 
 (对比xx.vcxproj文件)

@@ -483,9 +483,6 @@
     <ClCompile Include="..\..\src\ta_func\ta_ULTOSC.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ta_func\ta_utility.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\ta_func\ta_VAR.c">
       <Filter>Source Files</Filter>
     </ClCompile>

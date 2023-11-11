@@ -64,42 +64,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>..\..\lib\</OutDir>
-    <NMakeBuildCommandLine>lib /OUT:$(OutDir)ta_libc_$(Configuration).lib $(OutDir)ta_abstract_$(Configuration).lib $(OutDir)ta_common_$(Configuration).lib $(OutDir)ta_func_$(Configuration).lib</NMakeBuildCommandLine>
+    <NMakeBuildCommandLine>lib /OUT:$(OutDir)ta_libc_$(Configuration).lib $(OutDir)ta_common_$(Configuration).lib $(OutDir)ta_func_$(Configuration).lib</NMakeBuildCommandLine>
     <NMakeOutput>$(OutDir)ta_libc_$(Configuration).lib</NMakeOutput>
     <NMakeCleanCommandLine>del $(OutDir)ta_libc_$(Configuration).lib</NMakeCleanCommandLine>
-    <NMakeReBuildCommandLine>lib /OUT:$(OutDir)ta_libc_$(Configuration).lib $(OutDir)ta_abstract_$(Configuration).lib $(OutDir)ta_common_$(Configuration).lib $(OutDir)ta_func_$(Configuration).lib</NMakeReBuildCommandLine>
+    <NMakeReBuildCommandLine>lib /OUT:$(OutDir)ta_libc_$(Configuration).lib $(OutDir)ta_common_$(Configuration).lib $(OutDir)ta_func_$(Configuration).lib</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\lib\</OutDir>
-    <NMakeBuildCommandLine>lib /OUT:$(OutDir)ta_libc_$(Configuration).lib $(OutDir)ta_abstract_$(Configuration).lib $(OutDir)ta_common_$(Configuration).lib $(OutDir)ta_func_$(Configuration).lib</NMakeBuildCommandLine>
-    <NMakeOutput>$(OutDir)ta_libc_$(Configuration).lib</NMakeOutput>
-    <NMakeCleanCommandLine>del $(OutDir)ta_libc_$(Configuration).lib</NMakeCleanCommandLine>
-    <NMakeReBuildCommandLine>lib /OUT:$(OutDir)ta_libc_$(Configuration).lib $(OutDir)ta_abstract_$(Configuration).lib $(OutDir)ta_common_$(Configuration).lib $(OutDir)ta_func_$(Configuration).lib</NMakeReBuildCommandLine>
-    <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\lib\</OutDir>
-    <NMakeBuildCommandLine>lib /OUT:$(OutDir)ta_libc_$(Configuration).lib $(OutDir)ta_abstract_$(Configuration).lib $(OutDir)ta_common_$(Configuration).lib $(OutDir)ta_func_$(Configuration).lib</NMakeBuildCommandLine>
-    <NMakeOutput>$(OutDir)ta_libc_$(Configuration).lib</NMakeOutput>
-    <NMakeCleanCommandLine>del $(OutDir)ta_libc_$(Configuration).lib</NMakeCleanCommandLine>
-    <NMakeReBuildCommandLine>lib /OUT:$(OutDir)ta_libc_$(Configuration).lib $(OutDir)ta_abstract_$(Configuration).lib $(OutDir)ta_common_$(Configuration).lib $(OutDir)ta_func_$(Configuration).lib</NMakeReBuildCommandLine>
-    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>..\..\lib\</OutDir>
-    <NMakeBuildCommandLine>lib /OUT:$(OutDir)ta_libc_$(Configuration).lib $(OutDir)ta_abstract_$(Configuration).lib $(OutDir)ta_common_$(Configuration).lib $(OutDir)ta_func_$(Configuration).lib</NMakeBuildCommandLine>
+    <NMakeBuildCommandLine>lib /OUT:$(OutDir)ta_libc_$(Configuration).lib $(OutDir)ta_common_$(Configuration).lib $(OutDir)ta_func_$(Configuration).lib</NMakeBuildCommandLine>
     <NMakeOutput>$(OutDir)ta_libc_$(Configuration).lib</NMakeOutput>
     <NMakeCleanCommandLine>del $(OutDir)ta_libc_$(Configuration).lib</NMakeCleanCommandLine>
-    <NMakeReBuildCommandLine>lib /OUT:$(OutDir)ta_libc_$(Configuration).lib $(OutDir)ta_abstract_$(Configuration).lib $(OutDir)ta_common_$(Configuration).lib $(OutDir)ta_func_$(Configuration).lib</NMakeReBuildCommandLine>
+    <NMakeReBuildCommandLine>lib /OUT:$(OutDir)ta_libc_$(Configuration).lib $(OutDir)ta_common_$(Configuration).lib $(OutDir)ta_func_$(Configuration).lib</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
   </PropertyGroup>
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ta_abstract\ta_abstract.vcxproj">
-      <Project>{b3796a2b-872b-4b99-8391-f6e59728c2e3}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\ta_common\ta_common.vcxproj">
       <Project>{776fa24b-2d51-454a-abbd-06e48ef6ba9c}</Project>
     </ProjectReference>
@@ -108,7 +89,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\ta_abstract.h" />
     <ClInclude Include="..\..\include\ta_common.h" />
     <ClInclude Include="..\..\include\ta_defs.h" />
     <ClInclude Include="..\..\include\ta_func.h" />

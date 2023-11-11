@@ -1,55 +1,3 @@
-/* TA-LIB Copyright (c) 1999-2007, Mario Fortier
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or
- * without modification, are permitted provided that the following
- * conditions are met:
- *
- * - Redistributions of source code must retain the above copyright
- *   notice, this list of conditions and the following disclaimer.
- *
- * - Redistributions in binary form must reproduce the above copyright
- *   notice, this list of conditions and the following disclaimer in
- *   the documentation and/or other materials provided with the
- *   distribution.
- *
- * - Neither name of author nor the names of its contributors
- *   may be used to endorse or promote products derived from this
- *   software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/* List of contributors:
- *
- *  Initial  Name/description
- *  -------------------------------------------------------------------
- *  MF       Mario Fortier
- *  AC       Angelo Ciceri
- *
- *
- * Change history:
- *
- *  MMDDYY BY   Description
- *  -------------------------------------------------------------------
- *  112400 MF   First version.
- *  082004 AC   Add TA_SetCandleSettings, TA_RestoreCandleDefaultSettings
- *              and call to TA_RestoreCandleDefaultSettings in TA_Initialize
- *  041106 MF   Add prefix to theGlobals to avoid clash with other libs.
- *  040707 MF   Change global initialization to eliminate Mac OS X link error.
- */
-
 /* Description:
  *   Provides initialization / shutdown functionality for all modules.
  */
@@ -60,9 +8,9 @@
 #include <time.h>
 
 #include "ta_common.h"
-#include "ta_magic_nb.h"
 #include "ta_global.h"
-#include "ta_func.h"
+
+#define TA_LIBC_PRIV_MAGIC_NB           0xA203B203
 
 /**** External functions declarations. ****/
 /* None */
@@ -73,7 +21,7 @@
 /**** Global variables definitions.    ****/
 
 /* The entry point for all globals */
-TA_LibcPriv ta_theGlobals = {0,{{0,0,0}},0,0,0,0,(TA_Compatibility)0,{0},{{(TA_CandleSettingType)0,(TA_RangeType)0,0,0}}};
+TA_LibcPriv ta_theGlobals = {0,(TA_Compatibility)0,{0},{{(TA_CandleSettingType)0,(TA_RangeType)0,0,0}}};
 
 TA_LibcPriv *TA_Globals = &ta_theGlobals;
 
@@ -120,7 +68,7 @@ TA_RetCode TA_SetCandleSettings( TA_CandleSettingType settingType,
                                  double factor )
 {
     /*printf("setcdlset:%d  ",settingType);*/
-    if( settingType >= TA_AllCandleSettings )
+    if ( settingType < 0 || settingType >= TA_AllCandleSettings )
         return TA_BAD_PARAM;
     TA_Globals->candleSettings[settingType].settingType = settingType;
     TA_Globals->candleSettings[settingType].rangeType = rangeType;
@@ -162,14 +110,60 @@ TA_RetCode TA_RestoreCandleDefaultSettings( TA_CandleSettingType settingType )
     };
 
     int i;
-    if( settingType > TA_AllCandleSettings )
+    if ( settingType < 0 || settingType > TA_AllCandleSettings )
         return TA_BAD_PARAM;
-    if( settingType == TA_AllCandleSettings )
-        for( i = 0; i < TA_AllCandleSettings; ++i )
+
+    if (settingType == TA_AllCandleSettings) {
+        for (i = 0; i < TA_AllCandleSettings; ++i) {
             TA_Globals->candleSettings[i] = TA_CandleDefaultSettings[i];
-    else
+        }
+    }
+    else {
         TA_Globals->candleSettings[settingType] = TA_CandleDefaultSettings[settingType];
+    }
+
     return TA_SUCCESS;
+}
+
+TA_RetCode TA_SetUnstablePeriod(TA_FuncUnstId id, unsigned int  unstablePeriod)
+{
+    int i;
+
+    if (id < 0 || id > TA_FUNC_UNST_ALL)
+        return TA_BAD_PARAM;
+
+    if (id == TA_FUNC_UNST_ALL)
+    {
+        for (i = 0; i < (int)TA_FUNC_UNST_ALL; i++)
+        {
+            TA_Globals->unstablePeriod[i] = unstablePeriod;
+        }
+    }
+    else
+    {
+        TA_Globals->unstablePeriod[id] = unstablePeriod;    
+    }
+
+    return TA_SUCCESS;
+}
+
+unsigned int TA_GetUnstablePeriod(TA_FuncUnstId id)
+{
+    if (id < 0 || id >= TA_FUNC_UNST_ALL)
+        return 0;
+
+    return TA_Globals->unstablePeriod[id];
+}
+
+TA_RetCode TA_SetCompatibility(TA_Compatibility value)
+{
+    TA_Globals->compatibility = value;
+    return TA_SUCCESS;
+}
+
+TA_Compatibility TA_GetCompatibility(void)
+{
+    return TA_Globals->compatibility;
 }
 
 /**** Local functions definitions.     ****/

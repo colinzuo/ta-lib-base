@@ -24,7 +24,6 @@
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_1in_2out.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_adx.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_bbands.c" />
-    <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_candlestick.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_ma.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_macd.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_minmax.c" />
@@ -35,12 +34,10 @@
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_per_hlcv.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_per_ohlc.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_po.c" />
-    <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_rsi.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_sar.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_stddev.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_stoch.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_trange.c" />
-    <ClCompile Include="..\..\src\tools\ta_regtest\test_abstract.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\test_data.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\test_internals.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\test_util.c" />
@@ -56,12 +53,6 @@
     <ClInclude Include="..\..\src\tools\ta_regtest\ta_test_priv.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\gen_code\gen_code.vcxproj">
-      <Project>{21323e76-a1bc-40ef-a712-4fc4d781cc5a}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\ta_abstract\ta_abstract.vcxproj">
-      <Project>{b3796a2b-872b-4b99-8391-f6e59728c2e3}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\ta_common\ta_common.vcxproj">
       <Project>{776fa24b-2d51-454a-abbd-06e48ef6ba9c}</Project>
     </ProjectReference>

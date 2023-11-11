@@ -1,11 +1,9 @@
-#ifndef TA_MEMORY_H
-#define TA_MEMORY_H
-
-#ifndef TA_COMMON_H
-    #include "ta_common.h"
-#endif
+#pragma once
 
 #include <stdlib.h> 
+
+#include "ta_common.h"
+#include "ta_global.h"
 
 /* Interface macros */
 #define TA_Malloc(a)       malloc(a)
@@ -214,7 +212,3 @@
       if( Id##_Idx > maxIdx_##Id ) \
          Id##_Idx = 0; \
    }
-
-
-#endif
-

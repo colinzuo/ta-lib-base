@@ -1,37 +1,11 @@
-/* TA-LIB Copyright (c) 1999-2007, Mario Fortier
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or
- * without modification, are permitted provided that the following
- * conditions are met:
- *
- * - Redistributions of source code must retain the above copyright
- *   notice, this list of conditions and the following disclaimer.
- *
- * - Redistributions in binary form must reproduce the above copyright
- *   notice, this list of conditions and the following disclaimer in
- *   the documentation and/or other materials provided with the
- *   distribution.
- *
- * - Neither name of author nor the names of its contributors
- *   may be used to endorse or promote products derived from this
- *   software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-#ifndef TA_COMMON_H
-#define TA_COMMON_H
+
+#pragma once
+
+#include <stdio.h>
+#include <limits.h>
+#include <float.h>
+
+#include "ta_defs.h"
 
 /* The following macros are used to return internal errors.
  * The Id can be from 1 to 999 and translate to the user 
@@ -47,14 +21,6 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-
-#include <stdio.h>
-#include <limits.h>
-#include <float.h>
-
-#ifndef TA_DEFS_H
-   #include "ta_defs.h"
 #endif
 
 /* Some functions to get the version of TA-Lib.
@@ -79,10 +45,6 @@ const char *TA_GetVersionBuild ( void );
 const char *TA_GetVersionDate  ( void );
 const char *TA_GetVersionTime  ( void );
 
-/* Misc. declaration used throughout the library code. */
-typedef double TA_Real;
-typedef int    TA_Integer;
-
 /* General purpose structure containing an array of string. 
  *
  * Example of usage:
@@ -102,6 +64,7 @@ typedef struct TA_StringTable
    /* Hidden data for internal use by TA-Lib. Do not modify. */
    void *hiddenData;
 } TA_StringTable;
+
 /* End-user can get additional information related to a TA_RetCode. 
  *
  * Example:
@@ -142,8 +105,62 @@ void TA_SetRetCodeInfo( TA_RetCode theRetCode, TA_RetCodeInfo *retCodeInfo );
 TA_RetCode TA_Initialize( void );
 TA_RetCode TA_Shutdown( void );
 
+/* Some TA functions takes a certain amount of input data
+ * before stabilizing and outputing meaningful data. This is
+ * a behavior pertaining to the algo of some TA functions and
+ * is not particular to the TA-Lib implementation.
+ * TA-Lib allows you to automatically strip off these unstabl
+ * data from your output and from any internal processing.
+ * (See documentation for more info)
+ *
+ * Examples:
+ *      TA_SetUnstablePeriod( TA_FUNC_UNST_EMA, 30 );
+ *           Always strip off 30 price bar for the TA_EMA function.
+ *
+ *      TA_SetUnstablePeriod( TA_FUNC_UNST_ALL, 30 );
+ *           Always strip off 30 price bar from ALL functions
+ *           having an unstable period.
+ *
+ * See ta_defs.h for the enumeration TA_FuncUnstId
+ */
+
+TA_RetCode TA_SetUnstablePeriod(TA_FuncUnstId id,
+    unsigned int  unstablePeriod);
+
+unsigned int TA_GetUnstablePeriod(TA_FuncUnstId id);
+
+/* You can change slightly the behavior of the TA functions
+ * by requesting compatibiliy with some existing software.
+ *
+ * By default, the behavior is as close as the original
+ * author of the TA functions intend it to be.
+ *
+ * See ta_defs.h for the enumeration TA_Compatibility.
+ */
+TA_RetCode TA_SetCompatibility(TA_Compatibility value);
+TA_Compatibility TA_GetCompatibility(void);
+
+/* Candlesticks struct and functions
+ * Because candlestick patterns are subjective, it is necessary
+ * to allow the user to specify what should be the meaning of
+ * 'long body', 'short shadows', etc.
+ */
+
+ /* Call TA_SetCandleSettings to set that when comparing a candle
+  * basing on settingType it must be compared with the average
+  * of the last avgPeriod candles' rangeType multiplied by factor.
+  * This setting is valid until TA_RestoreCandleDefaultSettings is called
+  */
+TA_RetCode TA_SetCandleSettings(TA_CandleSettingType settingType,
+    TA_RangeType rangeType,
+    int avgPeriod,
+    double factor);
+
+/* Call TA_RestoreCandleDefaultSettings after using custom settings
+ * to restore the default settings for the specified settingType
+ */
+TA_RetCode TA_RestoreCandleDefaultSettings(TA_CandleSettingType settingType);
+
 #ifdef __cplusplus
 }
-#endif
-
 #endif

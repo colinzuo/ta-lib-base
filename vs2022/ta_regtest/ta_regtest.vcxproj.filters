@@ -21,9 +21,6 @@
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_regtest.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\tools\ta_regtest\test_abstract.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\tools\ta_regtest\test_data.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -43,9 +40,6 @@
       <Filter>Source Files\ta_test_func</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_bbands.c">
-      <Filter>Source Files\ta_test_func</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_candlestick.c">
       <Filter>Source Files\ta_test_func</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_ma.c">
@@ -76,9 +70,6 @@
       <Filter>Source Files\ta_test_func</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_po.c">
-      <Filter>Source Files\ta_test_func</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_rsi.c">
       <Filter>Source Files\ta_test_func</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_sar.c">

@@ -1,29 +1,22 @@
-#ifndef TA_TEST_PRIV_H
-#define TA_TEST_PRIV_H
+#pragma once
 
-#ifndef TA_LIBC_H
-   #include "ta_libc.h"
-#endif
+#include "ta_libc.h"
 
-#ifndef TA_ERROR_NUMBER_H
-   #include "ta_error_number.h"
-#endif
+#include "ta_error_number.h"
 
 typedef struct
 {
    unsigned int nbBars; /* Nb of element into the following arrays. */
 
    /* The arrays containing data. Unused array are set to NULL. */
-   TA_Real      *open;
-   TA_Real      *high;
-   TA_Real      *low;
-   TA_Real      *close;
-   TA_Real      *volume;
-   TA_Real      *openInterest;
+   double      *open;
+   double      *high;
+   double      *low;
+   double      *close;
+   double      *volume;
 } TA_History;
 
 ErrorNumber test_internals( void );
-ErrorNumber test_abstract( void );
 
 ErrorNumber freeLib( void );
 ErrorNumber allocLib( void );
@@ -31,15 +24,14 @@ ErrorNumber allocLib( void );
 void reportError( const char *str, TA_RetCode retCode );
 
 /* Global Temporary Used by the ta_func_xxx function. */
- 
 
 typedef struct
 {
-   TA_Real *in;
+   double *in;
 
-   TA_Real *out0;
-   TA_Real *out1;
-   TA_Real *out2;
+   double *out0;
+   double *out1;
+   double *out2;
 } TestBuffer;
 
 
@@ -61,10 +53,10 @@ void initGlobalBuffer( void );
 void clearAllBuffers( void );
 
 /* Initialize the 'gBuffer[i].in' with the provided data. */
-void setInputBuffer( unsigned int i, const TA_Real *data, unsigned int nbElement );
+void setInputBuffer( unsigned int i, const double *data, unsigned int nbElement );
 
 /* Same as setInputBuffer but fill with a single value. */
-void setInputBufferValue( unsigned int i, const TA_Real data, unsigned int nbElement );
+void setInputBufferValue( unsigned int i, const double data, unsigned int nbElement );
 
 /* Check that a buffer (within a TestBuffer) is not containing
  * NAN within the specified range (it also checks that all value
@@ -72,7 +64,7 @@ void setInputBufferValue( unsigned int i, const TA_Real data, unsigned int nbEle
  *
  * Return TA_TEST_PASS if all ok.
  */
-ErrorNumber checkForNAN( const TA_Real *buffer,
+ErrorNumber checkForNAN( const double *buffer,
                          unsigned int nbElement );
 
 /* Check that the 'data' is equal to the provided 
@@ -85,8 +77,8 @@ ErrorNumber checkForNAN( const TA_Real *buffer,
  *
  * Return TA_TEST_PASS if no difference are found.
  */
-ErrorNumber checkDataSame( const TA_Real *data,
-                           const TA_Real *originalInput,
+ErrorNumber checkDataSame( const double *data,
+                           const double *originalInput,
                            unsigned int nbElement );
 
 /* Check that the content of the first buffer
@@ -96,14 +88,14 @@ ErrorNumber checkDataSame( const TA_Real *data,
  *
  * Return TA_TEST_PASS if no difference are found.
  */
-ErrorNumber checkSameContent( TA_Real *buffer1,
-                              TA_Real *buffer2 );
+ErrorNumber checkSameContent( double *buffer1,
+                              double *buffer2 );
 
-ErrorNumber checkExpectedValue( const TA_Real *data,
+ErrorNumber checkExpectedValue( const double *data,
                                 TA_RetCode retCode, TA_RetCode expectedRetCode,
                                 unsigned int outBegIdx, unsigned int expectedBegIdx,
                                 unsigned int outNbElement, unsigned int expectedNbElement,
-                                TA_Real oneOfTheExpectedOutReal,
+                                double oneOfTheExpectedOutReal,
                                 unsigned int oneOfTheExpectedOutRealIndex );
 
 #define CHECK_EXPECTED_VALUE(bufid,id) \
@@ -152,13 +144,13 @@ ErrorNumber checkExpectedValue( const TA_Real *data,
 #define MAX_RANGE_SIZE 252
 #define MAX_RANGE_END  (MAX_RANGE_SIZE-1)
 
-typedef TA_RetCode (*RangeTestFunction)( TA_Integer    startIdx,
-                                         TA_Integer    endIdx,
-                                         TA_Real      *outputBuffer,
-                                         TA_Integer   *outputBufferInt,
-                                         TA_Integer   *outBegIdx,
-                                         TA_Integer   *outNbElement,
-                                         TA_Integer   *lookback,
+typedef TA_RetCode (*RangeTestFunction)( int    startIdx,
+                                         int    endIdx,
+                                         double      *outputBuffer,
+                                         int   *outputBufferInt,
+                                         int   *outBegIdx,
+                                         int   *outNbElement,
+                                         int   *lookback,
                                          void         *opaqueData,
                                          unsigned int  outputNb,
                                          unsigned int *isOutputInteger );
@@ -205,6 +197,3 @@ void printRetCode( TA_RetCode retCode );
 /* Function to print character to show that the software is still alive. */
 void showFeedback(void);
 void hideFeedback(void);
-
-#endif
-

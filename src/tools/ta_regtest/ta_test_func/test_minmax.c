@@ -1,35 +1,4 @@
-/* TA-LIB Copyright (c) 1999-2007, Mario Fortier
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or
- * without modification, are permitted provided that the following
- * conditions are met:
- *
- * - Redistributions of source code must retain the above copyright
- *   notice, this list of conditions and the following disclaimer.
- *
- * - Redistributions in binary form must reproduce the above copyright
- *   notice, this list of conditions and the following disclaimer in
- *   the documentation and/or other materials provided with the
- *   distribution.
- *
- * - Neither name of author nor the names of its contributors
- *   may be used to endorse or promote products derived from this
- *   software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+
 
 /* List of contributors:
  *
@@ -81,57 +50,57 @@ TA_MINMAXINDEX_TEST
 
 typedef struct
 {
-   TA_Integer doRangeTestFlag;
+   int doRangeTestFlag;
 
    TA_TestId  theFunction;
 
-   TA_Integer startIdx;
-   TA_Integer endIdx;
+   int startIdx;
+   int endIdx;
 
-   TA_Integer optInTimePeriod;
+   int optInTimePeriod;
  
    TA_RetCode expectedRetCode;
 
-   TA_Integer oneOfTheExpectedOutRealIndex0;
-   TA_Real    oneOfTheExpectedOutReal0;
+   int oneOfTheExpectedOutRealIndex0;
+   double    oneOfTheExpectedOutReal0;
 
-   TA_Integer expectedBegIdx;
-   TA_Integer expectedNbElement;
+   int expectedBegIdx;
+   int expectedNbElement;
 } TA_Test;
 
 typedef struct
 {
-   const TA_Real *input;
+   const double *input;
    unsigned int nbElement;
 } TA_RefTest;
 
 typedef struct
 {
    const TA_Test *test;
-   const TA_Real *close;
+   const double *close;
 } TA_RangeTestParam;
 
 /**** Local functions declarations.    ****/
 static ErrorNumber do_test( const TA_History *history,
                             const TA_Test *test );
 
-static TA_RetCode referenceMin( TA_Integer    startIdx,
-                                TA_Integer    endIdx,
-                                const TA_Real inReal[],
-                                TA_Integer    optInTimePeriod,
-                                TA_Integer   *outBegIdx,
-                                TA_Integer   *outNbElement,
-                                TA_Real       outReal[] );
+static TA_RetCode referenceMin( int    startIdx,
+                                int    endIdx,
+                                const double inReal[],
+                                int    optInTimePeriod,
+                                int   *outBegIdx,
+                                int   *outNbElement,
+                                double       outReal[] );
 
-static TA_RetCode referenceMax( TA_Integer    startIdx,
-                                TA_Integer    endIdx,
-                                const TA_Real inReal[],
-                                TA_Integer    optInTimePeriod,
-                                TA_Integer   *outBegIdx,
-                                TA_Integer   *outNbElement,
-                                TA_Real       outReal[] );
+static TA_RetCode referenceMax( int    startIdx,
+                                int    endIdx,
+                                const double inReal[],
+                                int    optInTimePeriod,
+                                int   *outBegIdx,
+                                int   *outNbElement,
+                                double       outReal[] );
 
-static ErrorNumber testCompareToReference( const TA_Real *input, int nbElement );
+static ErrorNumber testCompareToReference( const double *input, int nbElement );
 
 /**** Local variables definitions.     ****/
 
@@ -227,28 +196,28 @@ static TA_Test tableTest[] =
 
 #define NB_TEST (sizeof(tableTest)/sizeof(TA_Test))
 
-static TA_Real testSerie1[]  = {9,8,7,6,5};
-static TA_Real testSerie2[]  = {3,7,9,10,15,33,50};
-static TA_Real testSerie3[]  = {0,0,0,1,2,0,0,0};
-static TA_Real testSerie4[]  = {0,0,0,2,1,0,0,0};
-static TA_Real testSerie5[]  = {2,0,0,0,0,0,0,0};
-static TA_Real testSerie6[]  = {0,0,0,0,0,0,0,1};
-static TA_Real testSerie7[]  = {-3,2};
-static TA_Real testSerie8[]  = {2,-2};
-static TA_Real testSerie9[]  = {4,2,3};
-static TA_Real testSerie10[] = {3,3,-3,2,-1,0,2};
+static double testSerie1[]  = {9,8,7,6,5};
+static double testSerie2[]  = {3,7,9,10,15,33,50};
+static double testSerie3[]  = {0,0,0,1,2,0,0,0};
+static double testSerie4[]  = {0,0,0,2,1,0,0,0};
+static double testSerie5[]  = {2,0,0,0,0,0,0,0};
+static double testSerie6[]  = {0,0,0,0,0,0,0,1};
+static double testSerie7[]  = {-3,2};
+static double testSerie8[]  = {2,-2};
+static double testSerie9[]  = {4,2,3};
+static double testSerie10[] = {3,3,-3,2,-1,0,2};
 
 static TA_RefTest tableRefTest[] =
 {
-  {testSerie1, sizeof(testSerie1)/sizeof(TA_Real)},
-  {testSerie2, sizeof(testSerie2)/sizeof(TA_Real)},
-  {testSerie3, sizeof(testSerie3)/sizeof(TA_Real)},
-  {testSerie4, sizeof(testSerie4)/sizeof(TA_Real)},
-  {testSerie5, sizeof(testSerie5)/sizeof(TA_Real)},
-  {testSerie6, sizeof(testSerie6)/sizeof(TA_Real)},
-  {testSerie7, sizeof(testSerie7)/sizeof(TA_Real)},
-  {testSerie8, sizeof(testSerie8)/sizeof(TA_Real)},
-  {testSerie9, sizeof(testSerie10)/sizeof(TA_Real)}
+  {testSerie1, sizeof(testSerie1)/sizeof(double)},
+  {testSerie2, sizeof(testSerie2)/sizeof(double)},
+  {testSerie3, sizeof(testSerie3)/sizeof(double)},
+  {testSerie4, sizeof(testSerie4)/sizeof(double)},
+  {testSerie5, sizeof(testSerie5)/sizeof(double)},
+  {testSerie6, sizeof(testSerie6)/sizeof(double)},
+  {testSerie7, sizeof(testSerie7)/sizeof(double)},
+  {testSerie8, sizeof(testSerie8)/sizeof(double)},
+  {testSerie9, sizeof(testSerie10)/sizeof(double)}
 };
 
 #define NB_TEST_REF (sizeof(tableRefTest)/sizeof(TA_RefTest))
@@ -295,26 +264,26 @@ ErrorNumber test_func_minmax( TA_History *history )
 }
 
 /**** Local functions definitions.     ****/
-static TA_RetCode rangeTestFunction( TA_Integer    startIdx,
-                                     TA_Integer    endIdx,
-                                     TA_Real      *outputBuffer,
-                                     TA_Integer   *outputBufferInt,
-                                     TA_Integer   *outBegIdx,
-                                     TA_Integer   *outNbElement,
-                                     TA_Integer   *lookback,
+static TA_RetCode rangeTestFunction( int    startIdx,
+                                     int    endIdx,
+                                     double      *outputBuffer,
+                                     int   *outputBufferInt,
+                                     int   *outBegIdx,
+                                     int   *outNbElement,
+                                     int   *lookback,
                                      void         *opaqueData,
                                      unsigned int  outputNb,
                                      unsigned int *isOutputInteger )
 {
    TA_RetCode retCode;
    TA_RangeTestParam *testParam;
-   TA_Real *dummyBufferReal;
-   TA_Real *out1Real;
-   TA_Real *out2Real;
+   double *dummyBufferReal;
+   double *out1Real;
+   double *out2Real;
 
-   TA_Integer *dummyBufferInt;
-   TA_Integer *out1Int;
-   TA_Integer *out2Int;
+   int *dummyBufferInt;
+   int *out1Int;
+   int *out2Int;
   
    (void)outputNb;
    (void)outputBufferInt;
@@ -323,11 +292,11 @@ static TA_RetCode rangeTestFunction( TA_Integer    startIdx,
 
    testParam = (TA_RangeTestParam *)opaqueData;   
 
-   dummyBufferReal = TA_Malloc( ((endIdx-startIdx)+1)*sizeof(TA_Real));
+   dummyBufferReal = TA_Malloc( ((endIdx-startIdx)+1)*sizeof(double));
    if( !dummyBufferReal )
      return TA_ALLOC_ERR;
 
-   dummyBufferInt = TA_Malloc( ((endIdx-startIdx)+1)*sizeof(TA_Integer));
+   dummyBufferInt = TA_Malloc( ((endIdx-startIdx)+1)*sizeof(int));
    if( !dummyBufferInt )
    {
       TA_Free( dummyBufferReal );
@@ -440,8 +409,8 @@ static ErrorNumber do_test( const TA_History *history,
 {
    TA_RetCode retCode;
    ErrorNumber errNb;
-   TA_Integer outBegIdx;
-   TA_Integer outNbElement;
+   int outBegIdx;
+   int outNbElement;
    TA_RangeTestParam testParam;
 
    /* Set to NAN all the elements of the gBuffers.  */
@@ -555,17 +524,17 @@ static ErrorNumber do_test( const TA_History *history,
  * of complexity. Consequently, it is important to verify the
  * equivalence between the optimize and non-optimized version.
  */
-static TA_RetCode referenceMin( TA_Integer    startIdx,
-                                TA_Integer    endIdx,
-                                const TA_Real inReal[],
-                                TA_Integer    optInTimePeriod,
-                                TA_Integer   *outBegIdx,
-                                TA_Integer   *outNbElement,
-                                TA_Real       outReal[] )
+static TA_RetCode referenceMin( int    startIdx,
+                                int    endIdx,
+                                const double inReal[],
+                                int    optInTimePeriod,
+                                int   *outBegIdx,
+                                int   *outNbElement,
+                                double       outReal[] )
 {
-   TA_Real lowest, tmp;
-   TA_Integer outIdx, nbInitialElementNeeded;
-   TA_Integer trailingIdx, today, i;
+   double lowest, tmp;
+   int outIdx, nbInitialElementNeeded;
+   int trailingIdx, today, i;
 
    /* Identify the minimum number of price bar needed
     * to identify at least one output over the specified
@@ -617,18 +586,18 @@ static TA_RetCode referenceMin( TA_Integer    startIdx,
    return TA_SUCCESS;
 }
 
-static TA_RetCode referenceMax( TA_Integer    startIdx,
-                                TA_Integer    endIdx,
-                                const TA_Real inReal[],
-                                TA_Integer    optInTimePeriod,
-                                TA_Integer   *outBegIdx,
-                                TA_Integer   *outNbElement,
-                                TA_Real       outReal[] )
+static TA_RetCode referenceMax( int    startIdx,
+                                int    endIdx,
+                                const double inReal[],
+                                int    optInTimePeriod,
+                                int   *outBegIdx,
+                                int   *outNbElement,
+                                double       outReal[] )
 {
    /* Insert local variables here. */
-   TA_Real highest, tmp;
-   TA_Integer outIdx, nbInitialElementNeeded;
-   TA_Integer trailingIdx, today, i;
+   double highest, tmp;
+   int outIdx, nbInitialElementNeeded;
+   int trailingIdx, today, i;
 
 
 #ifndef TA_FUNC_NO_RANGE_CHECK
@@ -702,12 +671,12 @@ static TA_RetCode referenceMax( TA_Integer    startIdx,
    return TA_SUCCESS;
 }
 
-static ErrorNumber testCompareToReference( const TA_Real *input, int nbElement )
+static ErrorNumber testCompareToReference( const double *input, int nbElement )
 {
-   TA_Integer outBegIdx, outNbElement;
+   int outBegIdx, outNbElement;
    TA_RetCode retCode;
 
-   TA_Integer outBegIdxRef, outNbElementRef;
+   int outBegIdxRef, outNbElementRef;
    TA_RetCode retCodeRef;
 
    int period, startIdx, endIdx, testNb;

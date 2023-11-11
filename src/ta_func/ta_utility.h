@@ -4,16 +4,11 @@
  * never be called directly by the user of the TA-LIB.
  */
 
-#ifndef TA_UTILITY_H
-#define TA_UTILITY_H
+#pragma once
 
-#ifndef TA_FUNC_H
-    #include "ta_func.h"
-#endif
-
-#ifndef TA_GLOBAL_H
-    #include "ta_global.h"
-#endif
+#include "ta_common.h"
+#include "ta_memory.h"
+#include "ta_global.h"
 
 /* Calculate a Simple Moving Average.
  * This is an internal version, parameter are assumed validated.
@@ -27,14 +22,6 @@ TA_RetCode TA_INT_SMA( int           startIdx,
                        int          *outNBElement,
                        double       *outReal );
 
-TA_RetCode TA_S_INT_SMA( int          startIdx,
-                         int          endIdx,
-                         const float *inReal,
-                         int          optInTimePeriod, 
-                         int         *outBegIdx,
-                         int         *outNBElement,
-                         double      *outReal );
-
 /* Calculate an Exponential Moving Average.
  * This is an internal version, parameter are assumed validated.
  * (startIdx and endIdx cannot be -1).
@@ -47,15 +34,6 @@ TA_RetCode TA_INT_EMA( int           startIdx,
                        int          *outBegIdx,
                        int          *outNBElement,
                        double       *outReal );
-
-TA_RetCode TA_S_INT_EMA( int          startIdx,
-                         int          endIdx,
-                         const float *inReal,
-                         int          optInTimePeriod, 
-                         double       optInK_1,
-                         int         *outBegIdx,
-                         int         *outNBElement,
-                         double      *outReal );
 
 /* Calculate a MACD
  * This is an internal version, parameter are assumed validated.
@@ -72,18 +50,6 @@ TA_RetCode TA_INT_MACD( int           startIdx,
                         double        outRealMACD_0[],
                         double        outRealMACDSignal_1[],
                         double        outRealMACDHist_2[] );
-
-TA_RetCode TA_S_INT_MACD( int          startIdx,
-                          int          endIdx,
-                          const float  inReal[],
-                          int          optInFastPeriod, /* 0 is fix 12 */
-                          int          optInSlowPeriod, /* 0 is fix 26 */
-                          int          optInSignalPeriod_2, 
-                          int         *outBegIdx,
-                          int         *outNBElement,
-                          double       outRealMACD_0[],
-                          double       outRealMACDSignal_1[],
-                          double       outRealMACDHist_2[] );
 
 /* Internal Price Oscillator function.
  *
@@ -102,18 +68,6 @@ TA_RetCode TA_INT_PO( int           startIdx,
                       double       *tempBuffer,
                       int  doPercentageOutput );
 
-TA_RetCode TA_S_INT_PO( int           startIdx,
-                        int           endIdx,
-                        const float  *inReal,
-                        int           optInFastPeriod, 
-                        int           optInSlowPeriod, 
-                        TA_MAType     optInMethod_2,
-                        int          *outBegIdx,
-                        int          *outNBElement,
-                        double       *outReal,
-                        double       *tempBuffer,
-                        int  doPercentageOutput );
-
 /* Internal variance function. */
 TA_RetCode TA_INT_VAR( int           startIdx,
                        int           endIdx,
@@ -122,14 +76,6 @@ TA_RetCode TA_INT_VAR( int           startIdx,
                        int          *outBegIdx,
                        int          *outNBElement,
                        double       *outReal );
-
-TA_RetCode TA_S_INT_VAR( int           startIdx,
-                         int           endIdx,
-                         const float  *inReal,
-                         int           optInTimePeriod,                       
-                         int          *outBegIdx,
-                         int          *outNBElement,
-                         double       *outReal );
 
 /* A function to calculate a standard deviation.
  *
@@ -142,13 +88,6 @@ void TA_INT_stddev_using_precalc_ma( const double *inReal,
                                      int           inMovAvgNbElement,
                                      int           timePeriod,
                                      double       *output );
-
-void TA_S_INT_stddev_using_precalc_ma( const float  *inReal,
-                                       const double *inMovAvg,
-                                       int           inMovAvgBegIdx,
-                                       int           inMovAvgNbElement,
-                                       int           timePeriod,
-                                       double       *output );
 
 /* Provides an equivalent to standard "math.h" functions. */
 #define std_floor floor
@@ -278,18 +217,16 @@ void TA_S_INT_stddev_using_precalc_ma( const float  *inReal,
 #define TA_CANDLEFACTOR(SET)    (TA_Globals->candleSettings[TA_##SET].factor)
 
 #define TA_CANDLERANGE(SET,IDX) \
-    ( TA_CANDLERANGETYPE(SET) == ENUM_VALUE(RangeType,TA_RangeType_RealBody,RealBody) ? TA_REALBODY(IDX) : \
-    ( TA_CANDLERANGETYPE(SET) == ENUM_VALUE(RangeType,TA_RangeType_HighLow,HighLow)   ? TA_HIGHLOWRANGE(IDX) : \
-    ( TA_CANDLERANGETYPE(SET) == ENUM_VALUE(RangeType,TA_RangeType_Shadows,Shadows)   ? TA_UPPERSHADOW(IDX) + TA_LOWERSHADOW(IDX) : \
+    ( TA_CANDLERANGETYPE(SET) == TA_RangeType_RealBody ? TA_REALBODY(IDX) : \
+    ( TA_CANDLERANGETYPE(SET) == TA_RangeType_HighLow  ? TA_HIGHLOWRANGE(IDX) : \
+    ( TA_CANDLERANGETYPE(SET) == TA_RangeType_Shadows  ? TA_UPPERSHADOW(IDX) + TA_LOWERSHADOW(IDX) : \
       0 ) ) )
 #define TA_CANDLEAVERAGE(SET,SUM,IDX) \
     ( TA_CANDLEFACTOR(SET) \
         * ( TA_CANDLEAVGPERIOD(SET) != 0.0? SUM / TA_CANDLEAVGPERIOD(SET) : TA_CANDLERANGE(SET,IDX) ) \
-        / ( TA_CANDLERANGETYPE(SET) == ENUM_VALUE(RangeType,TA_RangeType_Shadows,Shadows) ? 2.0 : 1.0 ) \
+        / ( TA_CANDLERANGETYPE(SET) == TA_RangeType_Shadows ? 2.0 : 1.0 ) \
     )
 #define TA_REALBODYGAPUP(IDX2,IDX1)     ( min(inOpen[IDX2],inClose[IDX2]) > max(inOpen[IDX1],inClose[IDX1]) )
 #define TA_REALBODYGAPDOWN(IDX2,IDX1)   ( max(inOpen[IDX2],inClose[IDX2]) < min(inOpen[IDX1],inClose[IDX1]) )
 #define TA_CANDLEGAPUP(IDX2,IDX1)       ( inLow[IDX2] > inHigh[IDX1] )
 #define TA_CANDLEGAPDOWN(IDX2,IDX1)     ( inHigh[IDX2] < inLow[IDX1] )
-
-#endif

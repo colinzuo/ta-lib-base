@@ -1,5 +1,4 @@
-#ifndef TA_ERROR_NUMBER_H
-#define TA_ERROR_NUMBER_H
+#pragma once
 
 /* All possible failure should have a unique number different than zero. */
 typedef enum
@@ -250,18 +249,6 @@ typedef enum
   TA_CSI_CRS_PRICEBARBAD         = 808,
   TA_CSI_HISTORYALLOC_4_FAILED   = 809,
   TA_CSI_HISTORYALLOC_5_FAILED   = 810, 
-
-  /* Error code related to test_candlestick */
-  TA_TSTCDL_GETFUNCHANDLE_FAIL   = 900,
-  TA_TSTCDL_PARAMHOLDERALLOC_FAIL= 901,
-  TA_TSTCDL_NBINPUT_WRONG        = 902,
-  TA_TSTCDL_INPUT_TYPE_WRONG     = 903,
-  TA_TSTCDL_INPUT_FLAG_WRONG     = 904,
-  TA_TSTCDL_NBOUTPUT_WRONG       = 905,
-  TA_TSTCDL_OUTPUT_TYPE_WRONG    = 906,
-  TA_TSTCDL_CALLFUNC_FAIL        = 907,
-  TA_TSTCDL_GETLOOKBACK_FAIL     = 908,
-  TA_TSTCDL_PARAMHOLDERFREE_FAIL = 909,
    
   /* Error code related to test_merge */
   TA_TSTMERGE_AC_ADDFAILED_1          = 1000,
@@ -294,4 +281,3 @@ typedef enum
 
   TA_LAST_VALID_ERROR = 0xFFFF
 } ErrorNumber;
-#endif
