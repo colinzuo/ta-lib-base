@@ -19,7 +19,7 @@ static ErrorNumber testCircularBuffer( void );
 
 static TA_RetCode circBufferFillFrom0ToSize( int size, int *buffer );
 
-/**** Local functions definitions.     ****/
+
 ErrorNumber test_internals( void )
 {
    ErrorNumber retValue;
