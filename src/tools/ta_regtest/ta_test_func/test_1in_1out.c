@@ -1,20 +1,3 @@
-
-
-/* List of contributors:
- *
- *  Initial  Name/description
- *  -------------------------------------------------------------------
- *  MF       Mario Fortier
- *
- *
- * Change history:
- *
- *  MMDDYY BY   Description
- *  -------------------------------------------------------------------
- *  020203 MF   First version.
- *
- */
-
 /* Description:
  *
  *     Test functions which have the following
@@ -32,14 +15,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-/**** External functions declarations. ****/
-/* None */
-
-/**** External variables declarations. ****/
-/* None */
-
-/**** Global variables definitions.    ****/
-/* None */
 
 /**** Local declarations.              ****/
 typedef enum {
