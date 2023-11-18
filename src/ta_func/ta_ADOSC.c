@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_ADOSC_Lookback( int           optInFastPeriod, /* From 2 to 100000 */
                      int           optInSlowPeriod )  /* From 2 to 100000 */

@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_MACDEXT_Lookback( int           optInFastPeriod, /* From 2 to 100000 */
                        TA_MAType     optInFastMAType,
@@ -247,7 +245,7 @@ TA_RetCode TA_MACDEXT( int    startIdx,
     * will start at the requested 'startIdx'.
     */
    tempInteger = startIdx-lookbackSignal;
-   retCode = TA_PREFIX(MA)( tempInteger, endIdx,
+   retCode = TA_MA( tempInteger, endIdx,
                                 inReal, optInSlowPeriod, optInSlowMAType,
                                 &outBegIdx1, &outNbElement1, 
 							    slowMABuffer );
@@ -262,7 +260,7 @@ TA_RetCode TA_MACDEXT( int    startIdx,
    }
 
    /* Calculate the fast MA. */
-   retCode = TA_PREFIX(MA)( tempInteger, endIdx,
+   retCode = TA_MA( tempInteger, endIdx,
                                 inReal, optInFastPeriod, optInFastMAType,
                                 &outBegIdx2, &outNbElement2,
 							    fastMABuffer );

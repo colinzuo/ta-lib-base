@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_STDDEV_Lookback( int           optInTimePeriod, /* From 2 to 100000 */
                       double        optInNbDev )  /* From TA_REAL_MIN to TA_REAL_MAX */
@@ -91,7 +89,7 @@ TA_RetCode TA_STDDEV( int    startIdx,
    /* Insert TA function code here. */
 
    /* Calculate the variance. */
-   retCode = TA_PREFIX(INT_VAR)( startIdx, endIdx,
+   retCode = TA_INT_VAR( startIdx, endIdx,
                                      inReal, optInTimePeriod,
                                      outBegIdx, outNBElement, outReal );
 
@@ -143,7 +141,7 @@ TA_RetCode TA_STDDEV( int    startIdx,
  *       average. Still the function is put here because it is 
  *       closely related.
  */
-void TA_PREFIX(INT_stddev_using_precalc_ma)( const INPUT_TYPE *inReal,
+void TA_INT_stddev_using_precalc_ma( const double *inReal,
                                              const double *inMovAvg,
                                              int inMovAvgBegIdx,                                    
                                              int inMovAvgNbElement,

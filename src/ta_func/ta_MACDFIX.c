@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_MACDFIX_Lookback( int           optInSignalPeriod )  /* From 1 to 100000 */
 {
@@ -85,7 +83,7 @@ TA_RetCode TA_MACDFIX( int    startIdx,
 
    /* Insert TA function code here. */
 
-   return TA_PREFIX(INT_MACD)( startIdx, endIdx, inReal,
+   return TA_INT_MACD( startIdx, endIdx, inReal,
                                    0, /* 0 indicate fix 12 == 0.15  for optInFastPeriod */
                                    0, /* 0 indicate fix 26 == 0.075 for optInSlowPeriod */
                                    optInSignalPeriod,

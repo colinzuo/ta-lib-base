@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_BBANDS_Lookback( int           optInTimePeriod, /* From 2 to 100000 */
                       double        optInNbDevUp, /* From TA_REAL_MIN to TA_REAL_MAX */
@@ -176,7 +174,7 @@ TA_RetCode TA_BBANDS( int    startIdx,
     * The other two bands will simply add/substract the
     * standard deviation from this middle band.
     */
-   retCode = TA_PREFIX(MA)( startIdx, endIdx, inReal,
+   retCode = TA_MA( startIdx, endIdx, inReal,
                                 optInTimePeriod, optInMAType,
                                 outBegIdx, outNBElement, tempBuffer1 );
 
@@ -192,14 +190,14 @@ TA_RetCode TA_BBANDS( int    startIdx,
       /* A small speed optimization by re-using the
        * already calculated SMA.
        */
-       TA_PREFIX(INT_stddev_using_precalc_ma)( inReal, tempBuffer1, 
+       TA_INT_stddev_using_precalc_ma( inReal, tempBuffer1, 
                                                    (int)(*outBegIdx), (int)(*outNBElement),
                                                    optInTimePeriod, tempBuffer2 );
    }
    else
    {
       /* Calculate the Standard Deviation */
-      retCode = TA_PREFIX(STDDEV)( (int)(*outBegIdx), endIdx, inReal,
+      retCode = TA_STDDEV( (int)(*outBegIdx), endIdx, inReal,
                                        optInTimePeriod, 1.0,
                                        outBegIdx, outNBElement, tempBuffer2 );
 

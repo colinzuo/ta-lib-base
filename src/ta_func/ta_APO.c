@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_APO_Lookback( int           optInFastPeriod, /* From 2 to 100000 */
                    int           optInSlowPeriod, /* From 2 to 100000 */
@@ -113,7 +111,7 @@ TA_RetCode TA_APO( int    startIdx,
          return TA_ALLOC_ERR;
    #endif
 
-   retCode = TA_PREFIX(INT_PO)( startIdx, endIdx,                        
+   retCode = TA_INT_PO( startIdx, endIdx,                        
                                     inReal,
                                     optInFastPeriod, 
                                     optInSlowPeriod, 
@@ -133,9 +131,9 @@ TA_RetCode TA_APO( int    startIdx,
  *
  * A buffer must be provided for intermediate processing.
  */
-TA_RetCode TA_PREFIX(INT_PO)( int    startIdx,
+TA_RetCode TA_INT_PO( int    startIdx,
                               int    endIdx,
-                              const INPUT_TYPE *inReal,
+                              const double *inReal,
                               int    optInFastPeriod, 
                               int    optInSlowPeriod, 
                               TA_MAType optInMethod_2,
@@ -168,7 +166,7 @@ TA_RetCode TA_PREFIX(INT_PO)( int    startIdx,
    }
 
    /* Calculate the fast MA into the tempBuffer. */
-   retCode = TA_PREFIX(MA)( startIdx, endIdx,
+   retCode = TA_MA( startIdx, endIdx,
                                 inReal,
                                 optInFastPeriod, 
                                 optInMethod_2,                    
@@ -178,7 +176,7 @@ TA_RetCode TA_PREFIX(INT_PO)( int    startIdx,
    if( retCode == TA_SUCCESS )
    {
       /* Calculate the slow MA into the output. */
-      retCode = TA_PREFIX(MA)( startIdx, endIdx,                       
+      retCode = TA_MA( startIdx, endIdx,                       
                                    inReal,
                                    optInSlowPeriod, 
                                    optInMethod_2,

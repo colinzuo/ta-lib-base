@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_MACD_Lookback( int           optInFastPeriod, /* From 2 to 100000 */
                     int           optInSlowPeriod, /* From 2 to 100000 */
@@ -132,7 +130,7 @@ TA_RetCode TA_MACD( int    startIdx,
 
    /* Insert TA function code here. */  
 
-   return TA_PREFIX(INT_MACD)( startIdx, endIdx, inReal,
+   return TA_INT_MACD( startIdx, endIdx, inReal,
                                    optInFastPeriod,
                                    optInSlowPeriod,
                                    optInSignalPeriod,
@@ -143,9 +141,9 @@ TA_RetCode TA_MACD( int    startIdx,
                                    outMACDHist );
 }
 
-TA_RetCode TA_PREFIX(INT_MACD)( int    startIdx,
+TA_RetCode TA_INT_MACD( int    startIdx,
                                 int    endIdx,
-                                const INPUT_TYPE inReal[],
+                                const double inReal[],
                                 int    optInFastPeriod, /* 0 is fix 12 */
                                 int    optInSlowPeriod, /* 0 is fix 26 */
                                 int    optInSignalPeriod_2,
@@ -270,7 +268,7 @@ TA_RetCode TA_PREFIX(INT_MACD)( int    startIdx,
     * will start at the requested 'startIdx'.
     */
    tempInteger = startIdx-lookbackSignal;
-   retCode = TA_PREFIX(INT_EMA)( tempInteger, endIdx,
+   retCode = TA_INT_EMA( tempInteger, endIdx,
                                      inReal, optInSlowPeriod, k1,
                                      &outBegIdx1, &outNbElement1, slowEMABuffer );
 
@@ -284,7 +282,7 @@ TA_RetCode TA_PREFIX(INT_MACD)( int    startIdx,
    }
 
    /* Calculate the fast EMA. */
-   retCode = TA_PREFIX(INT_EMA)( tempInteger, endIdx,
+   retCode = TA_INT_EMA( tempInteger, endIdx,
                                      inReal, optInFastPeriod, k2,
                                      &outBegIdx2, &outNbElement2, fastEMABuffer );
 

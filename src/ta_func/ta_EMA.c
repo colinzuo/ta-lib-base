@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_EMA_Lookback( int           optInTimePeriod )  /* From 2 to 100000 */
 {
@@ -71,7 +69,7 @@ TA_RetCode TA_EMA( int    startIdx,
    /* Insert TA function code here. */
 
    /* Simply call the internal implementation of the EMA. */
-   return TA_PREFIX(INT_EMA)( startIdx, endIdx, inReal, 
+   return TA_INT_EMA( startIdx, endIdx, inReal, 
                                   optInTimePeriod,
                                   PER_TO_K( optInTimePeriod ),
                                   outBegIdx, outNBElement, outReal );
@@ -91,9 +89,9 @@ TA_RetCode TA_EMA( int    startIdx,
  *
  * The macro PER_TO_K is equivalent to the above formula.
  */
-TA_RetCode TA_PREFIX(INT_EMA)( int               startIdx,
+TA_RetCode TA_INT_EMA( int               startIdx,
                                int               endIdx,
-                               const INPUT_TYPE *inReal,
+                               const double *inReal,
                                int               optInTimePeriod, /* From 1 to TA_INTEGER_MAX */
                                double            optInK_1,          /* Ratio for calculation of EMA. */
                                int              *outBegIdx,

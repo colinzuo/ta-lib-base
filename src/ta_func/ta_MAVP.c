@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_MAVP_Lookback( int           optInMinPeriod, /* From 2 to 100000 */
                     int           optInMaxPeriod, /* From 2 to 100000 */
@@ -178,7 +176,7 @@ TA_RetCode TA_MAVP( int    startIdx,
 	        */
 
 		   /* Calculation of the MA required. */
-		   retCode = TA_PREFIX(MA)( startIdx, endIdx, inReal,
+		   retCode = TA_MA( startIdx, endIdx, inReal,
 			                            curPeriod, optInMAType,
 									    &localBegIdx,&localNbElement,localOutputArray );
 

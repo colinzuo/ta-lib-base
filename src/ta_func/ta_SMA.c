@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_SMA_Lookback( int           optInTimePeriod )  /* From 2 to 100000 */
 {
@@ -69,14 +67,14 @@ TA_RetCode TA_SMA( int    startIdx,
 
 #endif /* TA_FUNC_NO_RANGE_CHECK */
 
-  return TA_PREFIX(INT_SMA)( startIdx, endIdx,
+  return TA_INT_SMA( startIdx, endIdx,
                                  inReal, optInTimePeriod,
                                  outBegIdx, outNBElement, outReal ); 
 }
 
-TA_RetCode TA_PREFIX(INT_SMA)( int    startIdx,
+TA_RetCode TA_INT_SMA( int    startIdx,
                                int    endIdx,
-                               const INPUT_TYPE *inReal,
+                               const double *inReal,
                                int      optInTimePeriod, /* From 1 to TA_INTEGER_MAX */                       
                                int     *outBegIdx,
                                int     *outNBElement,

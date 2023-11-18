@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_NATR_Lookback( int           optInTimePeriod )  /* From 1 to 100000 */
 {
@@ -135,7 +133,7 @@ TA_RetCode TA_NATR( int    startIdx,
    if( optInTimePeriod <= 1 )
    {
       /* No smoothing needed. Just do a TRANGE. */
-      return TA_PREFIX(TRANGE)( startIdx, endIdx,
+      return TA_TRANGE( startIdx, endIdx,
                                     inHigh, inLow, inClose,
                                     outBegIdx, outNBElement, outReal );
    }
@@ -144,7 +142,7 @@ TA_RetCode TA_NATR( int    startIdx,
    ARRAY_ALLOC(tempBuffer, lookbackTotal+(endIdx-startIdx)+1 );
 
    /* Do TRANGE in the intermediate buffer. */
-   retCode = TA_PREFIX(TRANGE)( (startIdx-lookbackTotal+1), endIdx,
+   retCode = TA_TRANGE( (startIdx-lookbackTotal+1), endIdx,
                                     inHigh, inLow, inClose,
                                     &outBegIdx1, &outNbElement1,
 								    tempBuffer );

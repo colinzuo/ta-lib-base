@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_MAMA_Lookback( double        optInFastLimit, /* From 0.01 to 0.99 */
                     double        optInSlowLimit )  /* From 0.01 to 0.99 */

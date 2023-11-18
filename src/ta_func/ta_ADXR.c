@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_ADXR_Lookback( int           optInTimePeriod )  /* From 2 to 100000 */
 {
@@ -119,7 +117,7 @@ TA_RetCode TA_ADXR( int    startIdx,
          return TA_ALLOC_ERR;
    #endif
 
-   retCode = TA_PREFIX(ADX)( startIdx-(optInTimePeriod-1), endIdx,
+   retCode = TA_ADX( startIdx-(optInTimePeriod-1), endIdx,
                                  inHigh, inLow, inClose,
                                  optInTimePeriod, outBegIdx, outNBElement, adx );
 

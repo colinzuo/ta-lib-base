@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_MA_Lookback( int           optInTimePeriod, /* From 1 to 100000 */
                   TA_MAType     optInMAType ) 
@@ -148,37 +146,37 @@ TA_RetCode TA_MA( int    startIdx,
    switch( optInMAType )
    {
    case TA_MAType_SMA:
-      retCode = TA_PREFIX(SMA)( startIdx, endIdx, inReal, optInTimePeriod,
+      retCode = TA_SMA( startIdx, endIdx, inReal, optInTimePeriod,
                                     outBegIdx, outNBElement, outReal );
       break;
 
    case TA_MAType_EMA:
-      retCode = TA_PREFIX(EMA)( startIdx, endIdx, inReal, optInTimePeriod,                                     
+      retCode = TA_EMA( startIdx, endIdx, inReal, optInTimePeriod,                                     
                                     outBegIdx, outNBElement, outReal );
       break;
 
    case TA_MAType_WMA:
-      retCode = TA_PREFIX(WMA)( startIdx, endIdx, inReal, optInTimePeriod,
+      retCode = TA_WMA( startIdx, endIdx, inReal, optInTimePeriod,
                                     outBegIdx, outNBElement, outReal );
       break;
 
    case TA_MAType_DEMA:
-      retCode = TA_PREFIX(DEMA)( startIdx, endIdx, inReal, optInTimePeriod,
+      retCode = TA_DEMA( startIdx, endIdx, inReal, optInTimePeriod,
                                      outBegIdx, outNBElement, outReal );
       break;
 
    case TA_MAType_TEMA:
-      retCode = TA_PREFIX(TEMA)( startIdx, endIdx, inReal, optInTimePeriod,
+      retCode = TA_TEMA( startIdx, endIdx, inReal, optInTimePeriod,
                                      outBegIdx, outNBElement, outReal );
       break;
 
    case TA_MAType_TRIMA:
-      retCode = TA_PREFIX(TRIMA)( startIdx, endIdx, inReal, optInTimePeriod,
+      retCode = TA_TRIMA( startIdx, endIdx, inReal, optInTimePeriod,
                                       outBegIdx, outNBElement, outReal );
       break;
 
    case TA_MAType_KAMA:
-      retCode = TA_PREFIX(KAMA)( startIdx, endIdx, inReal, optInTimePeriod,
+      retCode = TA_KAMA( startIdx, endIdx, inReal, optInTimePeriod,
                                      outBegIdx, outNBElement, outReal );
       break;
 
@@ -193,7 +191,7 @@ TA_RetCode TA_MA( int    startIdx,
             return TA_ALLOC_ERR;
       #endif
 
-      retCode = TA_PREFIX(MAMA)( startIdx, endIdx, inReal, 0.5, 0.05,                           
+      retCode = TA_MAMA( startIdx, endIdx, inReal, 0.5, 0.05,                           
                                      outBegIdx, outNBElement,
                                      outReal, dummyBuffer );
                          
@@ -201,7 +199,7 @@ TA_RetCode TA_MA( int    startIdx,
       break;
 
    case TA_MAType_T3:
-      retCode = TA_PREFIX(T3)( startIdx, endIdx, inReal,
+      retCode = TA_T3( startIdx, endIdx, inReal,
                                    optInTimePeriod, 0.7,
                                    outBegIdx, outNBElement, outReal );
       break;

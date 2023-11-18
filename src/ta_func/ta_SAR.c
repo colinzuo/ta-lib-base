@@ -12,8 +12,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_SAR_Lookback( double        optInAcceleration, /* From 0 to TA_REAL_MAX */
                    double        optInMaximum )  /* From 0 to TA_REAL_MAX */
@@ -179,7 +177,7 @@ TA_RetCode TA_SAR( int    startIdx,
     * (ep is just used as a temp buffer here, the name
     *  of the parameter is not significant).
     */
-   retCode = TA_PREFIX(MINUS_DM)( startIdx, startIdx, inHigh, inLow, 1,
+   retCode = TA_MINUS_DM( startIdx, startIdx, inHigh, inLow, 1,
                                       &tempInt, &tempInt,
 								      ep_temp );
    if( ep_temp[0] > 0 )

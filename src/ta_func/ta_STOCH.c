@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_STOCH_Lookback( int           optInFastK_Period, /* From 1 to 100000 */
                      int           optInSlowK_Period, /* From 1 to 100000 */

@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_PPO_Lookback( int           optInFastPeriod, /* From 2 to 100000 */
                    int           optInSlowPeriod, /* From 2 to 100000 */
@@ -111,7 +109,7 @@ TA_RetCode TA_PPO( int    startIdx,
          return TA_ALLOC_ERR;
    #endif
 
-   retCode = TA_PREFIX(INT_PO)( startIdx, endIdx, inReal,
+   retCode = TA_INT_PO( startIdx, endIdx, inReal,
                                     optInFastPeriod,
                                     optInSlowPeriod,
                                     optInMAType,

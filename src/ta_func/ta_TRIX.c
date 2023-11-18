@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_TRIX_Lookback( int           optInTimePeriod )  /* From 1 to 100000 */
 {
@@ -115,7 +113,7 @@ TA_RetCode TA_TRIX( int    startIdx,
 
    /* Calculate the first EMA */   
    k = PER_TO_K(optInTimePeriod);  
-   retCode = TA_PREFIX(INT_EMA)( (startIdx-totalLookback), endIdx, inReal,
+   retCode = TA_INT_EMA( (startIdx-totalLookback), endIdx, inReal,
                                      optInTimePeriod, k,
                                      &begIdx, &nbElement,
 								     tempBuffer );

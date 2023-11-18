@@ -5,8 +5,6 @@
 #include "ta_utility.h"
 #include "ta_memory.h"
 
-#define TA_PREFIX(x) TA_##x
-#define INPUT_TYPE   double
 
 int TA_STOCHRSI_Lookback( int           optInTimePeriod, /* From 2 to 100000 */
                         int           optInFastK_Period, /* From 1 to 100000 */
@@ -182,7 +180,7 @@ TA_RetCode TA_STOCHRSI( int    startIdx,
 
    ARRAY_ALLOC( tempRSIBuffer, tempArraySize );
 
-   retCode = TA_PREFIX(RSI)(startIdx-lookbackSTOCHF, 
+   retCode = TA_RSI(startIdx-lookbackSTOCHF, 
                                 endIdx, 
                                 inReal, 
                                 optInTimePeriod, 
