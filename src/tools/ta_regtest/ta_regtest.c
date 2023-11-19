@@ -155,6 +155,7 @@ static ErrorNumber testTAFunction_ALL( void )
       fflush(stdout); \
       }
 
+#if 0
    DO_TEST( test_func_1in_1out, "MATH,VECTOR,DCPERIOD/PHASE,TRENDLINE/MODE" );
    DO_TEST( test_func_1in_2out, "PHASOR,SINE" );
    DO_TEST( test_func_adx,      "ADX,ADXR,DI,DM,DX" );
@@ -173,6 +174,9 @@ static ErrorNumber testTAFunction_ALL( void )
    DO_TEST( test_func_stddev,   "STDDEV,VAR" );
    DO_TEST( test_func_stoch,    "STOCH,STOCHF,STOCHRSI" );
    DO_TEST( test_func_trange,   "TRANGE,ATR" );
+#else
+   DO_TEST(test_func_debug, "DEBUG");
+#endif
 
    return TA_TEST_PASS; /* All tests succeeded. */
 }

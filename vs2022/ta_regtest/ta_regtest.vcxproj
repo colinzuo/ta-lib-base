@@ -41,6 +41,7 @@
     <ClCompile Include="..\..\src\tools\ta_regtest\test_data.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\test_internals.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\test_util.c" />
+    <ClCompile Include="test_debug.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\ta_common.h" />
