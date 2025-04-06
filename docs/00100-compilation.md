@@ -1,128 +1,78 @@
 
 ## official doc
 
-<https://ta-lib.org/d_api/d_api.html>
+[https://ta-lib.org/api/](https://ta-lib.org/api/)
 
 ## vs2022
 
-复制vs2005到目录vs2022
-使用vs2022打开
+IDE选择vs2022 community，没有特殊原因，就是当时这个是比较新的
 
-### UpgradeLog.htm
+另外IDE需要支持C17, pybind11里有用到
 
-自动升级会有一些报警，比如`$(TargetPath)`和`OutputFile`路径不一致
+## ta_common project
 
-<https://learn.microsoft.com/en-us/cpp/build/reference/common-macros-for-build-commands-and-properties?view=msvc-170>
+新增project，选template `Static Library`，创建ta_common project，同时
+创建ta_lib solution
 
-Linker里的Output File的缺省值是`$(OutDir)$(TargetName)$(TargetExt)`
+vs2022不能指定solution不创建目录，那么如果想放到特定目录下就只能先创建，然后把里面
+文件拷贝过去
 
-`$(TargetPath)`应该预期和这个一致，但实际不一样，所以警告
-(vs2019版本不会警告)
+缺省的项目配置有使能precompiled headers，这里我们用不到，所以删掉
 
-MSB8012: $(TargetPath) ('C:\work3\repos\myself\ta-lib-base\ta-lib\c\bin\gen_code.exe') does not match the Librarian's OutputFile property value '.\..\..\..\..\bin\gen_code.exe' ('C:\work3\repos\myself\ta-lib-base\ta-lib\bin\gen_code.exe') in project configuration 'cmr|Win32'. This may cause your project to build incorrectly. To correct this, please make sure that $(TargetPath) property value matches the value specified in %(Lib.OutputFile).
+### 添加headers and sources
 
-MSB8012: $(TargetName) ('gen_code') does not match the Linker's OutputFile property value '.\..\..\..\..\bin\gen_code_cmr.exe' ('gen_code_cmr') in project configuration 'cmr|Win32'. This may cause your project to build incorrectly. To correct this, please make sure that $(TargetName) property value matches the value specified in %(Link.OutputFile).
+添加源文件后C++配置才会出现
 
-MSB8012: $(TargetPath) ('C:\work3\repos\myself\ta-lib-base\ta-lib\c\bin\gen_code.exe') does not match the Linker's OutputFile property value '.\..\..\..\..\bin\gen_code_cmr.exe' ('C:\work3\repos\myself\ta-lib-base\ta-lib\bin\gen_code_cmr.exe') in project configuration 'cmr|Win32'. This may cause your project to build incorrectly. To correct this, please make sure that $(TargetPath) property value matches the value specified in %(Link.OutputFile).
+### 修改 Configuration
 
-### 和default project的配置区别
+- Ouput Directory: `.\..\..\lib\`
+- Target Name: `$(ProjectName)_$(Configuration)`
+- Additional Include Directories: `..\..\include`
+- Treat warnings as errors: `Yes`
+- Precompiled Header: `Not Using Precompiled Headers`
 
-(对比xx.vcxproj文件)
+## ta_func project
 
-Advanced
-- Use Debug Libraries: default debug里是`Yes`，这里都被设成`No`了
-- Character Set: default里是`Use Unicode Character Set`，这里被设成`Use Multi-Byte Character Set`
-- Whole Program Optimization: default release里是`Use Link Time Code Generation`, 这里被设成`No Whole Program Optimization`
+### 修改 Configuration
 
-```
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='cmr|Win32'">
-    <OutDir>.\..\..\..\..\lib\</OutDir>
-    <IntDir>.\..\..\..\..\temp\$(Configuration)\$(ProjectName)\</IntDir>
-    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
-  </PropertyGroup>
-```
+- Ouput Directory: `.\..\..\lib\`
+- Target Name: `$(ProjectName)_$(Configuration)`
+- Additional Include Directories: `.\..\..\src\ta_common;.\..\..\include`
+- Treat warnings as errors: `Yes`
+- Precompiled Header: `Not Using Precompiled Headers`
 
-#### cdd|Win32 vs Debug|Win32
+## ta_libc project
 
-```xml
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='cdd|Win32'">
-    <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\include;..\..\..\..\src\ta_common\imatix\sfl;..\..\..\..\src\ta_common;..\..\..\..\src\ta_common\mt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TA_DEBUG;_DEBUG;WIN32;_MBCS;_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>.\..\..\..\..\temp\$(Configuration)\$(ProjectName)/$(ProjectName).pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\..\..\temp\$(Configuration)\$(ProjectName)/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\..\..\temp\$(Configuration)\$(ProjectName)/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\..\..\temp\$(Configuration)\$(ProjectName)/</ProgramDataBaseFileName>
-      <XMLDocumentationFileName>.\..\..\..\..\temp\$(Configuration)\$(ProjectName)/</XMLDocumentationFileName>
-      <BrowseInformation>true</BrowseInformation>
-      <BrowseInformationFile>.\..\..\..\..\temp\$(Configuration)\$(ProjectName)/</BrowseInformationFile>
-      <WarningLevel>Level3</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-    </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>0x0409</Culture>
-    </ResourceCompile>
-    <Lib>
-      <OutputFile>.\..\..\..\..\lib/$(ProjectName)_$(Configuration).lib</OutputFile>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-    </Lib>
-    <Xdcmake>
-      <OutputFile>.\..\..\..\..\temp\$(Configuration)\$(ProjectName)/$(ProjectName)_$(Configuration).xml</OutputFile>
-    </Xdcmake>
-    <Bscmake>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\..\..\..\..\temp\$(Configuration)\$(ProjectName)/$(ProjectName)_$(Configuration).bsc</OutputFile>
-    </Bscmake>
-  </ItemDefinitionGroup>
-```
+Makefile project，就是把前面两个lib给链接一起
 
-```xml
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <Link>
-      <SubSystem>
-      </SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
-```  
+### 修改 Configuration
 
-## 新增x64
+不要在创建project时候配置比如build command，原因是如果在command里引用`OutDir`的话
+则会出错，因为这里不能修改Output Directory，在创建project后修改时候在结果`.vcxproj`
+文件中`OutDir`的修改排序在build command的后面，而这个文件看起来不支持这种情况。
 
-在toolbar的Win32处选择Configuration Manger
-在solution platform处选择New添加x64
+- Output Directory: `..\..\lib\`
+- Build Command Line: `lib /OUT:$(OutDir)ta_libc_$(Configuration).lib $(OutDir)ta_common_$(Configuration).lib $(OutDir)ta_func_$(Configuration).lib`
+- Rebuild All Command Line: `lib /OUT:$(OutDir)ta_libc_$(Configuration).lib $(OutDir)ta_common_$(Configuration).lib $(OutDir)ta_func_$(Configuration).lib`
+- Clean Command Line: `del $(OutDir)ta_libc_$(Configuration).lib`
+- Output: `$(OutDir)ta_libc_$(Configuration).lib`
 
-x64的project properties里会被自动配置
+## ta_regtest project
 
-### Librarian
+exe project
 
-General
-- Target Machine: `MachineX64 (/MACHINE:X64)`
+### 修改 Configuration
 
-## ta_common project properties
+- Output Directory: `.\..\..\bin\`
+- Target Name: `$(ProjectName)_$(Configuration)`
+- Treat warnings as errors: `Yes`
+- Additional Include Directories: `.\..\..\src\ta_common;.\..\..\src\tools\ta_regtest;.\..\..\src\ta_func;.\..\..\include;`
+- Additional Library Directories: `.\..\..\lib`
+- Additional Dependencies: `ta_libc_$(Configuration).lib;$(CoreLibraryDependencies);%(AdditionalDependencies)`
 
-### C/C++ 
+## run ta_regtest
 
-General
-- Additional Include Directories: `..\..\..\..\include;..\..\..\..\src\ta_common\imatix\sfl;..\..\..\..\src\ta_common;..\..\..\..\src\ta_common\mt;%(AdditionalIncludeDirectories)`
-Preprocessor
-- Preprocessor Definitions: `TA_DEBUG;_DEBUG;WIN32;_MBCS;_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)`
-Code Generation
-- Runtime Library: `Multi-threaded Debug DLL (/MDd)`
+原来是在cpp侧做测试，个人倾向在python侧做测试，在cpp侧则只有在测试
+失败时候做调试用。
 
-### Librarian
-
-General
-- Output File: `.\..\..\..\..\lib/$(ProjectName)_$(Configuration).lib`
+运行ta_regtest验证工程能正常运行

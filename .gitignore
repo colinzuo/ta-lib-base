@@ -1,6 +1,6 @@
 .idea
 .vscode
-ta-lib/c/temp
+*-bak
 
 ### VisualStudio ###
 ## Ignore Visual Studio temporary files, build results, and
