@@ -35,6 +35,7 @@
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_per_hlcv.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_per_ohlc.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_po.c" />
+    <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_rsi.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_sar.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_stddev.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_stoch.c" />

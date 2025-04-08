@@ -72,7 +72,11 @@ exe project
 
 ## run ta_regtest
 
-原来是在cpp侧做测试，个人倾向在python侧做测试，在cpp侧则只有在测试
-失败时候做调试用。
+原始cpp的测试弄的有些复杂，比如验证prefix和suffix是否被错误写入，验证
+是否startIdx和endIdx取不同值的时候结果并不一致，而实际上这种错误很难出现。
+
+所以个人倾向在python侧做测试，在cpp侧则只有在测试失败时候做调试用。
+
+但是保留原来的测试用作基本验证.
 
 运行ta_regtest验证工程能正常运行
