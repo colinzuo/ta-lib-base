@@ -12,6 +12,32 @@ extern "C" {
 #endif
 
 /*
+ * TA_ACCBANDS - Acceleration Bands
+ * 
+ * Input  = High, Low, Close
+ * Output = double, double, double
+ * 
+ * Optional Parameters
+ * -------------------
+ * optInTimePeriod:(From 2 to 100000)
+ *    Number of period
+ * 
+ * 
+ */
+TA_RetCode TA_ACCBANDS( int    startIdx,
+                        int    endIdx,
+                        const double inHigh[],
+                        const double inLow[],
+                        const double inClose[],
+                        int           optInTimePeriod, /* From 2 to 100000 */
+                        int          *outBegIdx,
+                        int          *outNBElement,
+                        double        outRealUpperBand[],
+                        double        outRealMiddleBand[],
+                        double        outRealLowerBand[] );
+int TA_ACCBANDS_Lookback( int           optInTimePeriod );  /* From 2 to 100000 */
+
+/*
  * TA_ACOS - Vector Trigonometric ACos
  * 
  * Input  = double
@@ -312,6 +338,29 @@ TA_RetCode TA_AVGPRICE( int    startIdx,
                         double        outReal[] );
 
 int TA_AVGPRICE_Lookback( void );
+
+/*
+ * TA_AVGDEV - Average Deviation
+ * 
+ * Input  = double
+ * Output = double
+ * 
+ * Optional Parameters
+ * -------------------
+ * optInTimePeriod:(From 2 to 100000)
+ *    Number of period
+ * 
+ * 
+ */
+TA_RetCode TA_AVGDEV(   int    startIdx,
+                        int    endIdx,
+                        const double inReal[],
+                        int           optInTimePeriod, /* From 2 to 100000 */
+                        int          *outBegIdx,
+                        int          *outNBElement,
+                        double        outReal[] );
+
+int TA_AVGDEV_Lookback( int           optInTimePeriod );  /* From 2 to 100000 */
 
 
 /*
@@ -2021,6 +2070,31 @@ TA_RetCode TA_HT_TRENDMODE( int    startIdx,
                             int           outInteger[] );
 
 int TA_HT_TRENDMODE_Lookback( void );
+
+
+/*
+ * TA_IMI - Intraday Momentum Index
+ * 
+ * Input  = Open, Close
+ * Output = double
+ * 
+ * Optional Parameters
+ * -------------------
+ * optInTimePeriod:(From 2 to 100000)
+ *    Number of period
+ * 
+ * 
+ */
+TA_RetCode TA_IMI(  int    startIdx,
+                    int    endIdx,
+                    const double inOpen[],
+                    const double inClose[],
+                    int           optInTimePeriod, /* From 2 to 100000 */
+                    int          *outBegIdx,
+                    int          *outNBElement,
+                    double        outReal[] );
+
+int TA_IMI_Lookback( int           optInTimePeriod );  /* From 2 to 100000 */
 
 
 /*

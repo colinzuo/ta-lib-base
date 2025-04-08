@@ -24,7 +24,9 @@
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_1in_1out.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_1in_2out.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_adx.c" />
+    <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_avgdev.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_bbands.c" />
+    <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_imi.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_ma.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_macd.c" />
     <ClCompile Include="..\..\src\tools\ta_regtest\ta_test_func\test_minmax.c" />

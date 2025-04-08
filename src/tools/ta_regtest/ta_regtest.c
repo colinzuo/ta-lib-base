@@ -159,7 +159,9 @@ static ErrorNumber testTAFunction_ALL( void )
    DO_TEST( test_func_1in_1out, "MATH,VECTOR,DCPERIOD/PHASE,TRENDLINE/MODE" );
    DO_TEST( test_func_1in_2out, "PHASOR,SINE" );
    DO_TEST( test_func_adx,      "ADX,ADXR,DI,DM,DX" );
+   DO_TEST( test_func_avgdev,   "AVGDEV" );
    DO_TEST( test_func_bbands,   "BBANDS" );
+   DO_TEST( test_func_imi,      "IMI" );
    DO_TEST( test_func_ma,       "All Moving Averages" );
    DO_TEST( test_func_macd,     "MACD,MACDFIX,MACDEXT" );
    DO_TEST( test_func_minmax,   "MIN,MAX,MININDEX,MAXINDEX,MINMAX,MINMAXINDEX" );

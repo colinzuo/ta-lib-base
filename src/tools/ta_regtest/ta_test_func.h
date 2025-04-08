@@ -3,7 +3,9 @@
 ErrorNumber test_func_1in_1out( TA_History *history );
 ErrorNumber test_func_1in_2out( TA_History *history );
 ErrorNumber test_func_adx     ( TA_History *history );
+ErrorNumber test_func_avgdev  ( TA_History *history );
 ErrorNumber test_func_bbands  ( TA_History *history );
+ErrorNumber test_func_imi     ( TA_History *history );
 ErrorNumber test_func_ma      ( TA_History *history );
 ErrorNumber test_func_macd    ( TA_History *history );
 ErrorNumber test_func_minmax  ( TA_History *history );
