@@ -34,6 +34,8 @@
     <ClCompile Include="..\..\src\ta_func\ta_AVGDEV.c" />
     <ClCompile Include="..\..\src\ta_func\ta_AVGPRICE.c" />
     <ClCompile Include="..\..\src\ta_func\ta_BBANDS.c" />
+    <ClCompile Include="..\..\src\ta_func\ta_BBDist.c" />
+    <ClCompile Include="..\..\src\ta_func\ta_BBWidth.c" />
     <ClCompile Include="..\..\src\ta_func\ta_BETA.c" />
     <ClCompile Include="..\..\src\ta_func\ta_BOP.c" />
     <ClCompile Include="..\..\src\ta_func\ta_CCI.c" />
@@ -250,7 +252,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.\..\..\src\ta_common;.\..\..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\src\ta_common;.\..\..\include;</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>

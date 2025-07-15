@@ -404,6 +404,59 @@ int TA_BBANDS_Lookback( int           optInTimePeriod, /* From 2 to 100000 */
                       TA_MAType     optInMAType ); 
 
 /*
+ * TA_BBDist - Bollinger Bands Dist
+ *
+ * Input  = double
+ * Output = double
+ *
+ * Optional Parameters
+ * -------------------
+ * optInTimePeriod:(From 2 to 100000)
+ *    Number of period
+ *
+ * optInNbDev:(From TA_REAL_MIN to TA_REAL_MAX)
+ *    Deviation multiplier
+ */
+TA_RetCode TA_BBDist(int    startIdx,
+    int    endIdx,
+    const double inReal[],
+    int           optInTimePeriod, /* From 2 to 100000 */
+    double        optInNbDev, /* From TA_REAL_MIN to TA_REAL_MAX */
+    int* outBegIdx,
+    int* outNBElement,
+    double        outRealUDist[],
+    double        outRealLDist[]);
+
+int TA_BBDist_Lookback(int           optInTimePeriod, /* From 2 to 100000 */
+    double        optInNbDev);
+
+/*
+ * TA_BBWidth - Bollinger Bands Width
+ *
+ * Input  = double
+ * Output = double
+ *
+ * Optional Parameters
+ * -------------------
+ * optInTimePeriod:(From 2 to 100000)
+ *    Number of period
+ *
+ * optInNbDev:(From TA_REAL_MIN to TA_REAL_MAX)
+ *    Deviation multiplier
+ */
+TA_RetCode TA_BBWidth(int    startIdx,
+    int    endIdx,
+    const double inReal[],
+    int           optInTimePeriod, /* From 2 to 100000 */
+    double        optInNbDev, /* From TA_REAL_MIN to TA_REAL_MAX */
+    int* outBegIdx,
+    int* outNBElement,
+    double        outRealWidth[]);
+
+int TA_BBWidth_Lookback(int           optInTimePeriod, /* From 2 to 100000 */
+    double        optInNbDev);
+
+/*
  * TA_BETA - Beta
  * 
  * Input  = double, double
