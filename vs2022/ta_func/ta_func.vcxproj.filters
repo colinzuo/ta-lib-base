@@ -527,5 +527,8 @@
     <ClCompile Include="..\..\src\ta_func\ta_BBDist.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\ta_func\ta_TrendData.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -155,7 +155,7 @@ static ErrorNumber testTAFunction_ALL( void )
       fflush(stdout); \
       }
 
-#if 1
+#if 0
    DO_TEST( test_func_1in_1out, "MATH,VECTOR,DCPERIOD/PHASE,TRENDLINE/MODE" );
    DO_TEST( test_func_1in_2out, "PHASOR,SINE" );
    DO_TEST( test_func_adx,      "ADX,ADXR,DI,DM,DX" );

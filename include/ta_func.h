@@ -3553,6 +3553,52 @@ int TA_TRANGE_Lookback( void );
 
 
 /*
+ * TA_TrendData - Trend Data
+ *
+ * Input  = double
+ * Output = double, double, double, double
+ *
+ * Optional Parameters
+ * -------------------
+ * optInTimePeriod:(From 2 to 100000)
+ *    Number of period
+ * 
+ * optInNbDev:(From TA_REAL_MIN to TA_REAL_MAX)
+ *    Deviation multiplier
+ *
+ * optInDistThres:(From 0 to 30)
+ *    distance to up/down band threshold
+ *
+ * optInDaysThres:(From 0 to 100)
+ *    days thres to be valid for switch
+ * 
+ * optInPctThres:(From 0 to 30)
+ *    percent thres to be valid for switch
+ *
+ */
+TA_RetCode TA_TrendData(int    startIdx,
+    int    endIdx,
+    const double inReal[],
+    int           optInTimePeriod,
+    double        optInNbDev,
+    double        optInDistThres,
+    double        optInDaysThres,
+    double        optInPctThres,
+    int* outBegIdx,
+    int* outNBElement,
+    double        outUpDays[],
+    double        outUpPercent[],
+    double        outDownDays[],
+    double        outDownPercent[]);
+
+int TA_TrendData_Lookback(int           optInTimePeriod,
+    double        optInNbDev,
+    double        optInDistThres,
+    double        optInDaysThres,
+    double        optInPctThres);
+
+
+/*
  * TA_TRIMA - Triangular Moving Average
  * 
  * Input  = double

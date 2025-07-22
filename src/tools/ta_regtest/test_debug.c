@@ -43,12 +43,16 @@ static ErrorNumber do_test_debug(const TA_History* history) {
     /* Re-initialize all the unstable period to zero. */
     TA_SetUnstablePeriod(TA_FUNC_UNST_ALL, 0);
 
-    retCode = TA_ACOS(0,
+    retCode = TA_TrendData(0,
         251,
         gBuffer[0].in,
+        40, 2, 20, 30, 15,
         &outBegIdx,
         &outNbElement,
-        gBuffer[0].out0);
+        gBuffer[0].out0,
+        gBuffer[0].out1,
+        gBuffer[0].out2,
+        gBuffer[1].out0);
 
     return TA_TEST_PASS;
 }
