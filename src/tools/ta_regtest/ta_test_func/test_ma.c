@@ -340,7 +340,6 @@ ErrorNumber test_func_ma( TA_History *history )
 
    for( i=0; i < NB_TEST; i++ )
    {
-
       if( (int)tableTest[i].expectedNbElement > (int)history->nbBars )
       {
          printf( "TA_MA Failed Bad Parameter for Test #%d (%d,%d)\n",

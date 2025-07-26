@@ -19,20 +19,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\ta_func\ta_ACCBANDS.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_ACOS.c" />
     <ClCompile Include="..\..\src\ta_func\ta_AD.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_ADD.c" />
     <ClCompile Include="..\..\src\ta_func\ta_ADOSC.c" />
     <ClCompile Include="..\..\src\ta_func\ta_ADX.c" />
     <ClCompile Include="..\..\src\ta_func\ta_ADXR.c" />
     <ClCompile Include="..\..\src\ta_func\ta_APO.c" />
     <ClCompile Include="..\..\src\ta_func\ta_AROON.c" />
     <ClCompile Include="..\..\src\ta_func\ta_AROONOSC.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_ASIN.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_ATAN.c" />
     <ClCompile Include="..\..\src\ta_func\ta_ATR.c" />
     <ClCompile Include="..\..\src\ta_func\ta_AVGDEV.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_AVGPRICE.c" />
     <ClCompile Include="..\..\src\ta_func\ta_BBANDS.c" />
     <ClCompile Include="..\..\src\ta_func\ta_BBDist.c" />
     <ClCompile Include="..\..\src\ta_func\ta_BBWidth.c" />
@@ -100,17 +95,11 @@
     <ClCompile Include="..\..\src\ta_func\ta_CDLUNIQUE3RIVER.c" />
     <ClCompile Include="..\..\src\ta_func\ta_CDLUPSIDEGAP2CROWS.c" />
     <ClCompile Include="..\..\src\ta_func\ta_CDLXSIDEGAP3METHODS.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_CEIL.c" />
     <ClCompile Include="..\..\src\ta_func\ta_CMO.c" />
     <ClCompile Include="..\..\src\ta_func\ta_CORREL.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_COS.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_COSH.c" />
     <ClCompile Include="..\..\src\ta_func\ta_DEMA.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_DIV.c" />
     <ClCompile Include="..\..\src\ta_func\ta_DX.c" />
     <ClCompile Include="..\..\src\ta_func\ta_EMA.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_EXP.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_FLOOR.c" />
     <ClCompile Include="..\..\src\ta_func\ta_HT_DCPERIOD.c" />
     <ClCompile Include="..\..\src\ta_func\ta_HT_DCPHASE.c" />
     <ClCompile Include="..\..\src\ta_func\ta_HT_PHASOR.c" />
@@ -123,8 +112,6 @@
     <ClCompile Include="..\..\src\ta_func\ta_LINEARREG_ANGLE.c" />
     <ClCompile Include="..\..\src\ta_func\ta_LINEARREG_INTERCEPT.c" />
     <ClCompile Include="..\..\src\ta_func\ta_LINEARREG_SLOPE.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_LN.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_LOG10.c" />
     <ClCompile Include="..\..\src\ta_func\ta_MA.c" />
     <ClCompile Include="..\..\src\ta_func\ta_MACD.c" />
     <ClCompile Include="..\..\src\ta_func\ta_MACDEXT.c" />
@@ -144,7 +131,6 @@
     <ClCompile Include="..\..\src\ta_func\ta_MINUS_DI.c" />
     <ClCompile Include="..\..\src\ta_func\ta_MINUS_DM.c" />
     <ClCompile Include="..\..\src\ta_func\ta_MOM.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_MULT.c" />
     <ClCompile Include="..\..\src\ta_func\ta_NATR.c" />
     <ClCompile Include="..\..\src\ta_func\ta_NVI.c" />
     <ClCompile Include="..\..\src\ta_func\ta_OBV.c" />
@@ -159,19 +145,12 @@
     <ClCompile Include="..\..\src\ta_func\ta_RSI.c" />
     <ClCompile Include="..\..\src\ta_func\ta_SAR.c" />
     <ClCompile Include="..\..\src\ta_func\ta_SAREXT.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_SIN.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_SINH.c" />
     <ClCompile Include="..\..\src\ta_func\ta_SMA.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_SQRT.c" />
     <ClCompile Include="..\..\src\ta_func\ta_STDDEV.c" />
     <ClCompile Include="..\..\src\ta_func\ta_STOCH.c" />
     <ClCompile Include="..\..\src\ta_func\ta_STOCHF.c" />
     <ClCompile Include="..\..\src\ta_func\ta_STOCHRSI.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_SUB.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_SUM.c" />
     <ClCompile Include="..\..\src\ta_func\ta_T3.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_TAN.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_TANH.c" />
     <ClCompile Include="..\..\src\ta_func\ta_TEMA.c" />
     <ClCompile Include="..\..\src\ta_func\ta_TRANGE.c" />
     <ClCompile Include="..\..\src\ta_func\ta_TrendData.c" />

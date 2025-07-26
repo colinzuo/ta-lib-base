@@ -77,7 +77,7 @@ TA_RetCode TA_INT_SMA(int    startIdx,
     int* outNBElement,
     double* outReal)
 {
-    double periodTotal;
+    double periodTotal, tempReal;
     int i, outIdx, trailingIdx, lookbackTotal;
 
     /* Identify the minimum number of price bar needed
@@ -116,8 +116,9 @@ TA_RetCode TA_INT_SMA(int    startIdx,
     do
     {
         periodTotal += inReal[i++];
-        outReal[outIdx++] = periodTotal / optInTimePeriod;
+        tempReal = periodTotal;
         periodTotal -= inReal[trailingIdx++];
+        outReal[outIdx++] = tempReal / optInTimePeriod;
     } while (i <= endIdx);
 
     /* All done. Indicate the output limits and return. */

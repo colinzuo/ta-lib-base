@@ -44,7 +44,6 @@
 
 /**** Local declarations.              ****/
 typedef enum {
-TA_AVGPRICE_TEST,
 TA_BOP_TEST
 } TA_TestId;
 
@@ -84,12 +83,6 @@ static ErrorNumber do_test( const TA_History *history,
 
 static TA_Test tableTest[] =
 {
-   /*******************/
-   /* AVGPRICE TEST   */
-   /*******************/
-   { 0, TA_AVGPRICE_TEST,  0, 251, 0, TA_SUCCESS,   0,  92.0,  0,  252 },
-   { 1, TA_AVGPRICE_TEST,  0, 251, 0, TA_SUCCESS,   1,  93.17, 0,  252 }, 
-
    /*************/
    /* BOP TEST  */
    /*************/
@@ -171,18 +164,6 @@ static TA_RetCode rangeTestFunction( int    startIdx,
                         outputBuffer );
       *lookback = TA_BOP_Lookback();
       break;
-   case TA_AVGPRICE_TEST:
-      retCode = TA_AVGPRICE( startIdx,
-                          endIdx,
-                          testParam->open,
-                          testParam->high,
-                          testParam->low,
-                          testParam->close,
-                          outBegIdx,
-                          outNbElement,
-                          outputBuffer );
-      *lookback = TA_AVGPRICE_Lookback();
-      break;
    default:
       retCode = TA_INTERNAL_ERROR(171);
    }
@@ -223,18 +204,6 @@ static ErrorNumber do_test( const TA_History *history,
                         gBuffer[0].out0 );
       break;
 
-   case TA_AVGPRICE_TEST:
-      retCode = TA_AVGPRICE( test->startIdx,
-                          test->endIdx,
-                          gBuffer[0].in,
-                          gBuffer[1].in,
-                          gBuffer[2].in,
-                          gBuffer[3].in,
-                          &outBegIdx,
-                          &outNbElement,
-                          gBuffer[0].out0 );
-      break;
-
    default:
       retCode = TA_INTERNAL_ERROR(172);
    }
@@ -272,17 +241,6 @@ static ErrorNumber do_test( const TA_History *history,
                         &outBegIdx,
                         &outNbElement,
                         gBuffer[0].in );
-      break;
-   case TA_AVGPRICE_TEST:
-      retCode = TA_AVGPRICE( test->startIdx,
-                          test->endIdx,
-                          gBuffer[0].in,
-                          gBuffer[1].in,
-                          gBuffer[2].in,
-                          gBuffer[3].in,
-                          &outBegIdx,
-                          &outNbElement,
-                          gBuffer[0].in );
       break;
    default:
       retCode = TA_INTERNAL_ERROR(173);
@@ -327,17 +285,6 @@ static ErrorNumber do_test( const TA_History *history,
                         &outNbElement,
                         gBuffer[1].in );
       break;
-   case TA_AVGPRICE_TEST:
-      retCode = TA_AVGPRICE( test->startIdx,
-                          test->endIdx,
-                          gBuffer[0].in,
-                          gBuffer[1].in,
-                          gBuffer[2].in,
-                          gBuffer[3].in,
-                          &outBegIdx,
-                          &outNbElement,
-                          gBuffer[1].in );
-      break;
    default:
       retCode = TA_INTERNAL_ERROR(174);
    }
@@ -381,17 +328,6 @@ static ErrorNumber do_test( const TA_History *history,
                         &outNbElement,
                         gBuffer[2].in );
       break;
-   case TA_AVGPRICE_TEST:
-      retCode = TA_AVGPRICE( test->startIdx,
-                          test->endIdx,
-                          gBuffer[0].in,
-                          gBuffer[1].in,
-                          gBuffer[2].in,
-                          gBuffer[3].in,
-                          &outBegIdx,
-                          &outNbElement,
-                          gBuffer[2].in );
-      break;
    default:
       retCode = TA_INTERNAL_ERROR(175);
    }
@@ -434,17 +370,6 @@ static ErrorNumber do_test( const TA_History *history,
                         &outBegIdx,
                         &outNbElement,
                         gBuffer[3].in );
-      break;
-   case TA_AVGPRICE_TEST:
-      retCode = TA_AVGPRICE( test->startIdx,
-                          test->endIdx,
-                          gBuffer[0].in,
-                          gBuffer[1].in,
-                          gBuffer[2].in,
-                          gBuffer[3].in,
-                          &outBegIdx,
-                          &outNbElement,
-                          gBuffer[3].in );
       break;
    default:
       retCode = TA_INTERNAL_ERROR(176);
