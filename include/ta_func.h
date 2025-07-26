@@ -3566,6 +3566,9 @@ int TA_TRANGE_Lookback( void );
  * optInNbDev:(From TA_REAL_MIN to TA_REAL_MAX)
  *    Deviation multiplier
  *
+ * optInWidthThres:(From 10 to 60)
+ *    band width threshold
+ * 
  * optInDistThres:(From 0 to 30)
  *    distance to up/down band threshold
  *
@@ -3581,6 +3584,7 @@ TA_RetCode TA_TrendData(int    startIdx,
     const double inReal[],
     int           optInTimePeriod,
     double        optInNbDev,
+    double        optInWidthThres,
     double        optInDistThres,
     double        optInDaysThres,
     double        optInPctThres,
@@ -3593,6 +3597,7 @@ TA_RetCode TA_TrendData(int    startIdx,
 
 int TA_TrendData_Lookback(int           optInTimePeriod,
     double        optInNbDev,
+    double        optInWidthThres,
     double        optInDistThres,
     double        optInDaysThres,
     double        optInPctThres);

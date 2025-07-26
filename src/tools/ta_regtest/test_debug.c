@@ -46,7 +46,7 @@ static ErrorNumber do_test_debug(const TA_History* history) {
     retCode = TA_TrendData(0,
         251,
         gBuffer[0].in,
-        40, 2, 20, 30, 15,
+        40, 2, 30, 20, 30, 15,
         &outBegIdx,
         &outNbElement,
         gBuffer[0].out0,

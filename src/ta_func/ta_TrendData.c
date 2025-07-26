@@ -8,6 +8,7 @@
 
 int TA_TrendData_Lookback(int           optInTimePeriod,
     double        optInNbDev,
+    double        optInWidthThres,
     double        optInDistThres,
     double        optInDaysThres,
     double        optInPctThres)
@@ -35,6 +36,9 @@ int TA_TrendData_Lookback(int           optInTimePeriod,
  * optInNbDev:(From TA_REAL_MIN to TA_REAL_MAX)
  *    Deviation multiplier
  *
+ * optInWidthThres:(From 10 to 60)
+ *    band width threshold
+ * 
  * optInDistThres:(From 0 to 30)
  *    distance to up/down band threshold
  *
@@ -50,6 +54,7 @@ TA_RetCode TA_TrendData(int    startIdx,
     const double inReal[],
     int           optInTimePeriod,
     double        optInNbDev,
+    double        optInWidthThres,
     double        optInDistThres,
     double        optInDaysThres,
     double        optInPctThres,
@@ -63,10 +68,11 @@ TA_RetCode TA_TrendData(int    startIdx,
     /* Insert local variables here. */
     TA_RetCode retCode;
     int i;
-    double tempClose, tempUdist, tempLdist, lastHigh, lastLow, tempDays, tempPct;
+    double tempClose, tempUdist, tempLdist, tempWidth, lastHigh, lastLow, tempDays, tempPct;
     int lastHighIdx = -1, lastLowIdx = -1, lastHighLowState = 0;
     ARRAY_REF(tempBuffer1);
     ARRAY_REF(tempBuffer2);
+    ARRAY_REF(tempBuffer3);
 
 #ifndef TA_FUNC_NO_RANGE_CHECK
 
@@ -106,9 +112,19 @@ TA_RetCode TA_TrendData(int    startIdx,
 
     tempBuffer1 = outUpDays;
     tempBuffer2 = outUpPercent;
+    tempBuffer3 = outDownDays;
 
     retCode = TA_BBDist(startIdx, endIdx, inReal,
         optInTimePeriod, optInNbDev, outBegIdx, outNBElement, tempBuffer1, tempBuffer2);
+
+    if ((retCode != TA_SUCCESS) || ((*outNBElement) == 0))
+    {
+        *outNBElement = 0;
+        return retCode;
+    }
+
+    retCode = TA_BBWidth(startIdx, endIdx, inReal,
+        optInTimePeriod, optInNbDev, outBegIdx, outNBElement, tempBuffer3);
 
     if ((retCode != TA_SUCCESS) || ((*outNBElement) == 0))
     {
@@ -121,6 +137,7 @@ TA_RetCode TA_TrendData(int    startIdx,
         tempClose = inReal[*outBegIdx + i];
         tempUdist = tempBuffer1[i];
         tempLdist = tempBuffer2[i];
+        tempWidth = tempBuffer3[i];
         outUpDays[i] = 0;
         outUpPercent[i] = 0;
         outDownDays[i] = 0;
@@ -139,7 +156,7 @@ TA_RetCode TA_TrendData(int    startIdx,
                     outUpDays[i] = i - lastLowIdx;
                     outUpPercent[i] = (tempClose - lastLow) * 100 / lastLow;
                 }
-            } else if (tempLdist <= 0) {
+            } else if (tempLdist <= optInDistThres && tempWidth >= optInWidthThres) {
                 tempDays = i - lastHighIdx;
                 tempPct = (lastHigh - tempClose) * 100 / lastHigh;
 
@@ -170,7 +187,7 @@ TA_RetCode TA_TrendData(int    startIdx,
                     outDownPercent[i] = (lastHigh - tempClose) * 100 / lastHigh;
                 }
             }
-            else if (tempUdist >= 0) {
+            else if (tempUdist >= -1 * optInDistThres && tempWidth >= optInWidthThres) {
                 tempDays = i - lastLowIdx;
                 tempPct = (tempClose - lastLow) * 100 / lastLow;
 
@@ -186,13 +203,13 @@ TA_RetCode TA_TrendData(int    startIdx,
             }
         }
         else {
-            if (tempUdist >= 0) {
+            if (tempUdist >= -1 * optInDistThres && tempWidth >= optInWidthThres) {
                 lastHigh = tempClose;
                 lastHighIdx = i;
 
                 lastHighLowState = 1;
             }
-            else if (tempLdist <= 0) {
+            else if (tempLdist <= optInDistThres && tempWidth >= optInWidthThres) {
                 lastLow = tempClose;
                 lastLowIdx = i;
 
