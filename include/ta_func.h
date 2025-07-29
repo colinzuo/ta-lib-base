@@ -394,6 +394,38 @@ int TA_BETA_Lookback( int           optInTimePeriod );  /* From 1 to 100000 */
 
 
 /*
+ * TA_Bias - Bias
+ *
+ * Input  = double
+ * Output = double
+ *
+ * Optional Parameters
+ * -------------------
+ * optInTimePeriod1:(From 1 to 100000)
+ *    Number of period 1
+ *
+ * optInTimePeriod2:(From 1 to 100000)
+ *    Number of period 2
+ * 
+ * optInTimePeriod2Shift:(From 0 to 100000)
+ *    shift of period 2
+ */
+TA_RetCode TA_Bias(int    startIdx,
+    int    endIdx,
+    const double inReal[],
+    int           optInTimePeriod1,
+    int           optInTimePeriod2,
+    int           optInTimePeriod2Shift,
+    int* outBegIdx,
+    int* outNBElement,
+    double        outPercent[]);
+
+int TA_Bias_Lookback(int           optInTimePeriod1,
+    int           optInTimePeriod2,
+    int           optInTimePeriod2Shift);
+
+
+/*
  * TA_BOP - Balance Of Power
  * 
  * Input  = Open, High, Low, Close
@@ -2958,6 +2990,34 @@ TA_RetCode TA_SMA( int    startIdx,
                    double        outReal[] );
 
 int TA_SMA_Lookback( int           optInTimePeriod );  /* From 2 to 100000 */
+
+
+/*
+ * TA_SmaExt - Simple Moving Average Ext
+ *
+ * Input  = double
+ * Output = double
+ *
+ * Optional Parameters
+ * -------------------
+ * optInTimePeriod:(From 1 to 100000)
+ *    Number of period
+ *
+ * optInTimePeriodShift:(From 0 to 100000)
+ *    Shift of period
+ *
+ */
+TA_RetCode TA_SmaExt(int    startIdx,
+    int    endIdx,
+    const double inReal[],
+    int           optInTimePeriod,
+    int           optInTimePeriodShift,
+    int* outBegIdx,
+    int* outNBElement,
+    double        outReal[]);
+
+int TA_SmaExt_Lookback(int           optInTimePeriod,
+    int           optInTimePeriodShift);
 
 
 /*

@@ -32,6 +32,7 @@
     <ClCompile Include="..\..\src\ta_func\ta_BBDist.c" />
     <ClCompile Include="..\..\src\ta_func\ta_BBWidth.c" />
     <ClCompile Include="..\..\src\ta_func\ta_BETA.c" />
+    <ClCompile Include="..\..\src\ta_func\ta_Bias.c" />
     <ClCompile Include="..\..\src\ta_func\ta_BOP.c" />
     <ClCompile Include="..\..\src\ta_func\ta_CCI.c" />
     <ClCompile Include="..\..\src\ta_func\ta_CDL2CROWS.c" />
@@ -137,7 +138,6 @@
     <ClCompile Include="..\..\src\ta_func\ta_PLUS_DI.c" />
     <ClCompile Include="..\..\src\ta_func\ta_PLUS_DM.c" />
     <ClCompile Include="..\..\src\ta_func\ta_PPO.c" />
-    <ClCompile Include="..\..\src\ta_func\ta_PVI.c" />
     <ClCompile Include="..\..\src\ta_func\ta_ROC.c" />
     <ClCompile Include="..\..\src\ta_func\ta_ROCP.c" />
     <ClCompile Include="..\..\src\ta_func\ta_ROCR.c" />
@@ -146,6 +146,7 @@
     <ClCompile Include="..\..\src\ta_func\ta_SAR.c" />
     <ClCompile Include="..\..\src\ta_func\ta_SAREXT.c" />
     <ClCompile Include="..\..\src\ta_func\ta_SMA.c" />
+    <ClCompile Include="..\..\src\ta_func\ta_SmaExt.c" />
     <ClCompile Include="..\..\src\ta_func\ta_STDDEV.c" />
     <ClCompile Include="..\..\src\ta_func\ta_STOCH.c" />
     <ClCompile Include="..\..\src\ta_func\ta_STOCHF.c" />
